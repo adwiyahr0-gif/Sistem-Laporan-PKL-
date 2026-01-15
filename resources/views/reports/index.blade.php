@@ -8,7 +8,7 @@
             </div>
             
             <div class="flex items-center gap-4">
-                <a href="{{ route('reports.export-pdf') }}" class="inline-flex items-center px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm hover:shadow-md">
+                <a href="{{ route('reports.export-pdf') }}" target="_blank" class="inline-flex items-center px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm hover:shadow-md">
                     <i class="fa-solid fa-file-pdf mr-2 text-red-500"></i> Cetak PDF
                 </a>
                 <a href="{{ route('reports.create') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-bold uppercase tracking-wider hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all transform active:scale-95">

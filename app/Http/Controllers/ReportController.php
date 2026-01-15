@@ -7,128 +7,156 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class ReportController extends Controller
 {
     /**
-     * DASHBOARD: Menampilkan ringkasan data di halaman utama
+     * Tampilan Dashboard Utama
      */
-    public function dashboard()
+    public function dashboard(): View
     {
         $userId = Auth::id();
-        
-        // Menyiapkan data untuk widget statistik di dashboard
         $data = [
             'total'     => Report::where('user_id', $userId)->count(),
             'disetujui' => Report::where('user_id', $userId)->where('status', 'disetujui')->count(),
             'pending'   => Report::where('user_id', $userId)->where('status', 'pending')->count(),
         ];
-
         return view('dashboard', compact('data'));
     }
 
     /**
-     * INDEX: Daftar semua laporan
+     * Halaman Daftar Laporan Harian (Index)
      */
-    public function index()
+    public function index(): View
     {
-        $reports = Report::where('user_id', Auth::id())->latest()->get();
+        $reports = Report::where('user_id', Auth::id())
+                         ->latest('tanggal')
+                         ->get();
+
         return view('reports.index', compact('reports'));
     }
 
     /**
-     * CREATE & STORE: Form tambah laporan
+     * Halaman Form Tambah Laporan
      */
-    public function create()
+    public function create(): View
     {
         return view('reports.create');
     }
 
+    /**
+     * Simpan Laporan Baru ke Database
+     */
     public function store(Request $request)
     {
         $request->validate([
             'kegiatan' => 'required|string|min:5',
-            'tanggal' => 'required|date',
+            'tanggal'  => 'required|date',
         ]);
 
         Report::create([
-            'user_id' => Auth::id(),
+            'user_id'  => Auth::id(),
             'kegiatan' => $request->kegiatan,
-            'tanggal' => $request->tanggal,
-            'status' => 'pending', 
+            'tanggal'  => $request->tanggal,
+            'status'   => 'pending', 
         ]);
 
         return redirect()->route('reports.index')->with('success', 'Laporan berhasil disimpan!');
     }
 
     /**
-     * EDIT & UPDATE: Form ubah laporan
+     * FITUR STATISTIK: Dinamis & Formal (Updated)
      */
-    public function edit($id)
+    public function statistik(): View
+    {
+        $userId = Auth::id();
+        
+        // Mengambil semua laporan milik user untuk ringkasan (Cards)
+        $reports = Report::where('user_id', $userId)
+                         ->latest('tanggal')
+                         ->get();
+
+        // Persiapan data untuk Diagram Garis (7 Hari Terakhir)
+        $chartData = [];
+        $days = [];
+        
+        for ($i = 6; $i >= 0; $i--) {
+            // Mengambil tanggal mundur dari hari ini
+            $carbonDate = Carbon::now()->subDays($i);
+            $dateString = $carbonDate->format('Y-m-d');
+            
+            // Format label hari untuk diagram (Contoh: 15 Jan)
+            $days[] = $carbonDate->translatedFormat('d M'); 
+            
+            // Hitung jumlah laporan secara dinamis berdasarkan user dan tanggal
+            $chartData[] = Report::where('user_id', $userId)
+                                 ->whereDate('tanggal', $dateString)
+                                 ->count();
+        }
+
+        return view('reports.statistik', compact('reports', 'chartData', 'days'));
+    }
+
+    /**
+     * Cetak Laporan ke PDF
+     */
+    public function exportPdf(): Response
+    {
+        $user = Auth::user();
+        $reports = Report::where('user_id', $user->id)
+                         ->orderBy('tanggal', 'asc')
+                         ->get();
+
+        $pdf = Pdf::loadView('reports.pdf', [
+            'reports' => $reports,
+            'user' => $user,
+            'dateExport' => Carbon::now()->translatedFormat('d F Y')
+        ]);
+
+        $pdf->setPaper('a4', 'portrait');
+        $fileName = 'Laporan_PKL_' . str_replace(' ', '_', $user->name) . '.pdf';
+
+        return $pdf->stream($fileName);
+    }
+
+    /**
+     * Halaman Edit Laporan
+     */
+    public function edit($id): View
     {
         $report = Report::where('user_id', Auth::id())->findOrFail($id);
         return view('reports.edit', compact('report'));
     }
 
+    /**
+     * Update Laporan
+     */
     public function update(Request $request, $id)
     {
-        $report = Report::where('user_id', Auth::id())->findOrFail($id);
-
         $request->validate([
             'kegiatan' => 'required|string|min:5',
-            'tanggal' => 'required|date',
+            'tanggal'  => 'required|date',
         ]);
 
+        $report = Report::where('user_id', Auth::id())->findOrFail($id);
         $report->update([
             'kegiatan' => $request->kegiatan,
-            'tanggal' => $request->tanggal,
+            'tanggal'  => $request->tanggal,
         ]);
 
         return redirect()->route('reports.index')->with('success', 'Laporan berhasil diperbarui!');
     }
 
     /**
-     * DESTROY: Hapus laporan
+     * Hapus Laporan
      */
     public function destroy($id)
     {
         $report = Report::where('user_id', Auth::id())->findOrFail($id);
         $report->delete();
+
         return redirect()->route('reports.index')->with('success', 'Laporan berhasil dihapus!');
-    }
-
-    /**
-     * STATISTIK: Data untuk grafik statistik
-     */
-    public function statistik()
-    {
-        $userId = Auth::id();
-        $totalLaporan = Report::where('user_id', $userId)->count();
-        $disetujui = Report::where('user_id', $userId)->where('status', 'disetujui')->count();
-        $menunggu = Report::where('user_id', $userId)->where('status', 'pending')->count();
-        
-        $targetLaporan = 40; 
-        $persentase = ($totalLaporan > 0) ? round(($totalLaporan / $targetLaporan) * 100) : 0;
-
-        $chartData = [];
-        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-        foreach ($days as $day) {
-            $date = Carbon::parse('this ' . $day);
-            $count = Report::where('user_id', $userId)->whereDate('tanggal', $date->toDateString())->count();
-            $chartData[$day] = ($count > 0) ? min(($count / 5) * 100, 100) : 0;
-        }
-
-        $recentActivities = Report::where('user_id', $userId)->orderBy('tanggal', 'desc')->take(3)->get();
-        return view('statistik', compact('totalLaporan', 'disetujui', 'menunggu', 'persentase', 'chartData', 'recentActivities'));
-    }
-
-    /**
-     * EXPORT PDF: Cetak laporan ke file PDF
-     */
-    public function exportPdf()
-    {
-        $reports = Report::where('user_id', Auth::id())->orderBy('tanggal', 'asc')->get();
-        $pdf = Pdf::loadView('reports.pdf', compact('reports'))->setPaper('a4', 'portrait');
-        return $pdf->stream('Laporan_PKL_' . Auth::user()->name . '.pdf');
     }
 }

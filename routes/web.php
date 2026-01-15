@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\PresensiController; // Tambahkan ini
 use Illuminate\Support\Facades\Route;
 
 // --- GUEST ROUTE ---
@@ -9,7 +10,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// --- DASHBOARD ROUTE (Menggunakan Controller) ---
+// --- DASHBOARD ROUTE ---
 Route::get('/dashboard', [ReportController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -26,7 +27,6 @@ Route::middleware('auth')->group(function () {
 
     /**
      * --- REPORT / JURNAL MANAGEMENT ---
-     * PENTING: Route export-pdf HARUS di atas Route::resource
      */
     Route::get('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.export-pdf');
     Route::resource('reports', ReportController::class);
@@ -34,8 +34,10 @@ Route::middleware('auth')->group(function () {
     // --- MENU KATEGORI: AKTIVITAS ---
     Route::get('/statistik', [ReportController::class, 'statistik'])->name('statistik.index');
     
-    // Route statis menggunakan view langsung (Sederhana & Cepat)
-    Route::view('/presensi', 'presensi')->name('presensi.index');
+    // --- FITUR PRESESI (DIPERBARUI) ---
+    // Sekarang menggunakan Controller, bukan Route::view lagi
+    Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi.index');
+    Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
 
     // --- MENU KATEGORI: INFORMASI ---
     Route::view('/pengumuman', 'pengumuman')->name('pengumuman.index');
