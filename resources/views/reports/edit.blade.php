@@ -1,33 +1,35 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Laporan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 p-10">
-    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow">
-        <h2 class="text-xl font-bold mb-5 text-blue-600">Edit Laporan Harian</h2>
-        
-        <form action="{{ route('reports.update', $report->id) }}" method="POST">
-            @csrf
-            @method('PUT') {{-- Penting: Laravel butuh ini untuk update data --}}
-            
-            <div class="mb-4">
-                <label class="block mb-2 font-semibold">Tanggal</label>
-                <input type="date" name="tanggal" value="{{ $report->tanggal }}" class="w-full p-2 border rounded focus:outline-blue-500" required>
-            </div>
-            
-            <div class="mb-4">
-                <label class="block mb-2 font-semibold">Kegiatan</label>
-                <textarea name="kegiatan" rows="4" class="w-full p-2 border rounded focus:outline-blue-500" required>{{ $report->kegiatan }}</textarea>
-            </div>
-            
-            <div class="flex justify-between items-center mt-6">
-                <a href="{{ route('reports.index') }}" class="text-gray-500 hover:underline">Batal</a>
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700">Simpan Perubahan</button>
-            </div>
-        </form>
+<x-app-layout>
+    <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto">
+        <div class="mb-8 flex items-center justify-between">
+            <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight uppercase">Edit Laporan Kegiatan</h1>
+            <a href="{{ route('reports.index') }}" class="inline-flex items-center text-xs font-bold text-slate-400 uppercase tracking-[0.2em] hover:text-indigo-600 transition-colors">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+            </a>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
+            <form action="{{ route('reports.update', $report->id) }}" method="POST" class="p-8 sm:p-10 space-y-8">
+                @csrf
+                @method('PATCH')
+                
+                <div class="space-y-2">
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Tanggal Kegiatan</label>
+                    <input type="date" name="tanggal" value="{{ $report->tanggal }}" required 
+                        class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-indigo-100 transition-all outline-none">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Detail Pekerjaan</label>
+                    <textarea name="kegiatan" rows="6" required 
+                        class="w-full bg-slate-50 border-none rounded-[2rem] px-6 py-4 text-sm font-medium text-slate-600 leading-relaxed focus:ring-4 focus:ring-indigo-100 transition-all outline-none">{{ $report->kegiatan }}</textarea>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-indigo-600 text-white py-5 rounded-[1.5rem] text-xs font-black uppercase tracking-[0.3em] hover:bg-indigo-700 shadow-lg shadow-indigo-100 hover:shadow-indigo-200 transition-all transform active:scale-[0.98]">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</body>
-</html>
+</x-app-layout>

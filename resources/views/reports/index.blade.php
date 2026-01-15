@@ -1,159 +1,109 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Laporan Harian PKL - Kominfo Binjai') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12" x-data="{ 
-        openModal: false, 
-        openEditModal: false, 
-        reportId: null, 
-        reportTanggal: '', 
-        reportKegiatan: '' 
-    }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6 lg:px-8">
+        
+        <div class="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Laporan Kegiatan Harian</h1>
+                <p class="text-slate-500 mt-2 font-medium">Monitor dan kelola progres magang Anda secara sistematis.</p>
+            </div>
             
-            @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-sm flex justify-between items-center" role="alert">
-                    <span>{{ session('success') }}</span>
-                    <button type="button" class="font-bold" @click="$el.parentElement.remove()">&times;</button>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('reports.export-pdf') }}" class="inline-flex items-center px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm hover:shadow-md">
+                    <i class="fa-solid fa-file-pdf mr-2 text-red-500"></i> Cetak PDF
+                </a>
+                <a href="{{ route('reports.create') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-bold uppercase tracking-wider hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all transform active:scale-95">
+                    <i class="fa-solid fa-plus mr-2"></i> Tambah Laporan
+                </a>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            @php
+                $stats = [
+                    ['label' => 'Total Laporan', 'value' => $reports->count(), 'icon' => 'fa-folder-open', 'color' => 'indigo', 'bg' => 'bg-indigo-50', 'text' => 'text-indigo-600'],
+                    ['label' => 'Disetujui', 'value' => $reports->where('status', 'disetujui')->count(), 'icon' => 'fa-circle-check', 'color' => 'emerald', 'bg' => 'bg-emerald-50', 'text' => 'text-emerald-600'],
+                    ['label' => 'Menunggu', 'value' => $reports->where('status', 'pending')->count(), 'icon' => 'fa-clock', 'color' => 'amber', 'bg' => 'bg-amber-50', 'text' => 'text-amber-600'],
+                ];
+            @endphp
+            @foreach($stats as $stat)
+            <div class="bg-white p-7 rounded-[2rem] border border-white shadow-xl shadow-slate-200/60 flex items-center gap-6 transition-transform hover:scale-[1.02]">
+                <div class="w-16 h-16 {{ $stat['bg'] }} {{ $stat['text'] }} rounded-2xl flex items-center justify-center text-2xl shadow-inner">
+                    <i class="fa-solid {{ $stat['icon'] }}"></i>
                 </div>
-            @endif
-
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-t-4 border-indigo-900">
-                <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-800 uppercase tracking-tight">Daftar Kegiatan Harian</h3>
-                        <p class="text-xs text-indigo-600 font-bold">Mahasiswa: {{ Auth::user()->name }}</p>
-                    </div>
-                    
-                    <div class="flex gap-2">
-                        <a href="{{ route('reports.export-pdf') }}" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-bold text-xs text-white uppercase hover:bg-red-700 transition shadow-sm">
-                            <i class="fa-solid fa-file-pdf mr-2"></i> PDF
-                        </a>
-
-                        <button type="button" @click="openModal = true" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-bold text-xs text-white uppercase hover:bg-indigo-700 transition shadow-sm">
-                            <i class="fa-solid fa-plus mr-2"></i> Tambah Laporan
-                        </button>
-                    </div>
+                <div>
+                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] mb-1">{{ $stat['label'] }}</p>
+                    <p class="text-3xl font-black text-slate-800">{{ $stat['value'] }}</p>
                 </div>
+            </div>
+            @endforeach
+        </div>
 
-                <div class="overflow-x-auto border rounded-lg">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50 border-b text-[10px] uppercase font-bold text-gray-500 tracking-wider">
-                                <th class="p-4">Tanggal</th>
-                                <th class="p-4">Kegiatan / Pekerjaan</th>
-                                <th class="p-4">Status</th>
-                                <th class="p-4 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @forelse($reports as $report)
-                            <tr class="hover:bg-blue-50/50 transition">
-                                <td class="p-4 text-sm font-semibold text-gray-700 whitespace-nowrap">
-                                    {{ \Carbon\Carbon::parse($report->tanggal)->translatedFormat('d F Y') }}
-                                </td>
-                                <td class="p-4 text-sm text-gray-600 leading-relaxed">
+        <div class="max-w-7xl mx-auto bg-white/70 backdrop-blur-md rounded-[2.5rem] border border-white shadow-2xl shadow-slate-200/50 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50/80 border-b border-slate-100">
+                            <th class="px-8 py-6 text-[11px] font-black text-slate-500 uppercase tracking-widest">Tanggal & Hari</th>
+                            <th class="px-8 py-6 text-[11px] font-black text-slate-500 uppercase tracking-widest">Detail Kegiatan</th>
+                            <th class="px-8 py-6 text-[11px] font-black text-slate-500 uppercase tracking-widest text-center">Status Jurnal</th>
+                            <th class="px-8 py-6 text-[11px] font-black text-slate-500 uppercase tracking-widest text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        @forelse($reports as $report)
+                        <tr class="hover:bg-indigo-50/40 transition-colors group">
+                            <td class="px-8 py-7 whitespace-nowrap">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-black text-slate-700 tracking-tight">{{ \Carbon\Carbon::parse($report->tanggal)->translatedFormat('d F Y') }}</span>
+                                    <span class="text-[10px] font-bold text-indigo-400 uppercase mt-1 tracking-wider">{{ \Carbon\Carbon::parse($report->tanggal)->translatedFormat('l') }}</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-7">
+                                <p class="text-sm text-slate-600 leading-relaxed max-w-md font-medium">
                                     {{ $report->kegiatan }}
-                                </td>
-                                <td class="p-4">
-                                    <span class="px-2 py-1 text-[10px] font-bold rounded {{ $report->status == 'disetujui' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700' }}">
-                                        {{ strtoupper($report->status) }}
+                                </p>
+                            </td>
+                            <td class="px-8 py-7 text-center">
+                                @if($report->status == 'disetujui')
+                                    <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-100/80 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-200">
+                                        <i class="fa-solid fa-check-double mr-2 text-[12px]"></i> Disetujui
                                     </span>
-                                </td>
-                                <td class="p-4">
-                                    <div class="flex justify-center gap-3">
-                                        <button type="button" 
-                                            @click="
-                                                openEditModal = true; 
-                                                reportId = '{{ $report->id }}'; 
-                                                reportTanggal = '{{ $report->tanggal }}'; 
-                                                reportKegiatan = `{{ $report->kegiatan }}`;
-                                            " 
-                                            class="text-indigo-600 hover:text-indigo-900 font-bold text-[10px] uppercase">
-                                            Edit
+                                @else
+                                    <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-amber-100/80 text-amber-700 text-[10px] font-black uppercase tracking-widest border border-amber-200">
+                                        <i class="fa-solid fa-spinner fa-spin mr-2 text-[12px]"></i> Pending
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-8 py-7 text-right">
+                                <div class="flex items-center justify-end gap-3">
+                                    <a href="{{ route('reports.edit', $report->id) }}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 hover:shadow-sm transition-all" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square text-sm"></i>
+                                    </a>
+                                    <form action="{{ route('reports.destroy', $report->id) }}" method="POST" onsubmit="return confirm('Hapus laporan ini?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 hover:shadow-sm transition-all" title="Hapus">
+                                            <i class="fa-solid fa-trash-can text-sm"></i>
                                         </button>
-
-                                        <form action="{{ route('reports.destroy', $report->id) }}" method="POST" onsubmit="return confirm('Hapus data?')">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="text-red-500 hover:text-red-700 font-bold text-[10px] uppercase">Hapus</button>
-                                        </form>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-24 text-center">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-20 h-20 bg-slate-50 text-slate-200 rounded-full flex items-center justify-center text-3xl mb-6 shadow-inner">
+                                        <i class="fa-solid fa-inbox"></i>
                                     </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="p-10 text-center text-gray-400 italic">Belum ada kegiatan yang dicatat.</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                                    <p class="text-slate-400 text-sm font-bold uppercase tracking-[0.2em]">Data Kosong</p>
+                                    <p class="text-slate-300 text-xs mt-2">Belum ada aktivitas yang dicatat hari ini.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <div x-show="openModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" x-cloak>
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="fixed inset-0 bg-gray-900 bg-opacity-60 transition-opacity" @click="openModal = false"></div>
-                <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border-t-8 border-indigo-600 transform transition-all">
-                    <form action="{{ route('reports.store') }}" method="POST">
-                        @csrf
-                        <div class="p-6 border-b flex justify-between items-center bg-gray-50">
-                            <h3 class="text-lg font-extrabold text-indigo-900 uppercase">Input Kegiatan Harian</h3>
-                            <button type="button" @click="openModal = false" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tanggal Kegiatan</label>
-                                <input type="date" name="tanggal" value="{{ date('Y-m-d') }}" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Detail Pekerjaan</label>
-                                <textarea name="kegiatan" rows="5" placeholder="Tuliskan detail pekerjaan Anda hari ini..." class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required></textarea>
-                            </div>
-                        </div>
-                        <div class="p-6 bg-gray-50 flex flex-row-reverse gap-3">
-                            <button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-bold text-xs rounded-lg hover:bg-indigo-700 transition uppercase shadow-md">Simpan Laporan</button>
-                            <button type="button" @click="openModal = false" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 font-bold text-xs rounded-lg hover:bg-gray-50 transition uppercase">Batal</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div x-show="openEditModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;" x-cloak>
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div class="fixed inset-0 bg-gray-900 bg-opacity-60 transition-opacity" @click="openEditModal = false"></div>
-                <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border-t-8 border-green-600 transform transition-all">
-                    <form :action="'/reports/' + reportId" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="p-6 border-b flex justify-between items-center bg-gray-50">
-                            <h3 class="text-lg font-extrabold text-green-900 uppercase">Edit Kegiatan Harian</h3>
-                            <button type="button" @click="openEditModal = false" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Tanggal Kegiatan</label>
-                                <input type="date" name="tanggal" x-model="reportTanggal" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-green-500 focus:ring-green-500" required>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Detail Pekerjaan</label>
-                                <textarea name="kegiatan" rows="5" x-model="reportKegiatan" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-green-500 focus:ring-green-500" required></textarea>
-                            </div>
-                        </div>
-                        <div class="p-6 bg-gray-50 flex flex-row-reverse gap-3">
-                            <button type="submit" class="px-6 py-2 bg-green-600 text-white font-bold text-xs rounded-lg hover:bg-green-700 transition uppercase shadow-md">Simpan Perubahan</button>
-                            <button type="button" @click="openEditModal = false" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 font-bold text-xs rounded-lg hover:bg-gray-50 transition uppercase">Batal</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
     </div>
-
-    <style> [x-cloak] { display: none !important; } </style>
 </x-app-layout>

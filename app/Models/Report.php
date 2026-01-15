@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
 {
-    protected $fillable = ['user_id', 'tanggal', 'kegiatan', 'status'];
-
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
+    // Daftarkan semua kolom yang boleh diisi melalui form
+    protected $fillable = [
+        'user_id',
+        'tanggal', 
+        'kegiatan',
+        'status',
+    ];
 }
