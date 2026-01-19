@@ -73,58 +73,82 @@
 
             <div class="flex-1 px-6 py-8 space-y-8 overflow-y-auto sidebar-scroll relative">
                 
-                <div>
-                    <p class="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4" x-show="sidebarOpen">Utama</p>
-                    <div class="space-y-1.5">
-                        <a href="{{ route('dashboard') }}" 
-                           class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('dashboard') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
-                            <div class="w-8 flex justify-center"><i class="fa-solid fa-house-user text-xl"></i></div>
-                            <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Dashboard</span>
-                        </a>
+                @if(strtolower(Auth::user()->role) === 'admin')
+                    <div>
+                        <p class="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4" x-show="sidebarOpen">Panel Utama Admin</p>
+                        <div class="space-y-1.5">
+                            <a href="{{ route('admin.dashboard') }}" 
+                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('admin.dashboard') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-chart-line text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Statistik Admin</span>
+                            </a>
 
-                        <a href="{{ route('reports.index') }}" 
-                           class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('reports.*') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
-                            <div class="w-8 flex justify-center"><i class="fa-solid fa-book-open-reader text-xl"></i></div>
-                            <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Laporan Harian</span>
-                        </a>
+                            <a href="{{ route('admin.students.index') }}" 
+                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('admin.students.*') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-users text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Data Mahasiswa</span>
+                            </a>
+                            
+                            <a href="#" class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover text-white/80">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-file-circle-check text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Validasi Laporan</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <div>
+                        <p class="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4" x-show="sidebarOpen">Utama</p>
+                        <div class="space-y-1.5">
+                            <a href="{{ route('dashboard') }}" 
+                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('dashboard') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-house-user text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Dashboard</span>
+                            </a>
 
-                <div>
-                    <p class="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4" x-show="sidebarOpen">Aktivitas</p>
-                    <div class="space-y-1.5">
-                        <a href="{{ route('presensi.index') }}" 
-                           class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('presensi.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
-                            <div class="w-8 flex justify-center"><i class="fa-solid fa-calendar-check text-xl"></i></div>
-                            <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Presensi Magang</span>
-                        </a>
-                        <a href="{{ route('statistik.index') }}" 
-                           class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('statistik.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
-                            <div class="w-8 flex justify-center"><i class="fa-solid fa-chart-line text-xl"></i></div>
-                            <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Statistik Laporan</span>
-                        </a>
+                            <a href="{{ route('reports.index') }}" 
+                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('reports.*') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-book-open-reader text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Laporan Harian</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
 
-                <div>
-                    <p class="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4" x-show="sidebarOpen">Informasi PKL</p>
-                    <div class="space-y-1.5">
-                        <a href="{{ route('pengumuman.index') }}" 
-                           class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('pengumuman.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
-                            <div class="w-8 flex justify-center"><i class="fa-solid fa-bullhorn text-xl"></i></div>
-                            <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Pengumuman</span>
-                        </a>
-                        <a href="{{ route('panduan.index') }}" 
-                           class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('panduan.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
-                            <div class="w-8 flex justify-center"><i class="fa-solid fa-file-pdf text-xl"></i></div>
-                            <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Berkas PKL</span>
-                        </a>
-                        <a href="#" class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover text-white/80">
-                            <div class="w-8 flex justify-center"><i class="fa-solid fa-users-gear text-xl"></i></div>
-                            <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Daftar Pembimbing</span>
-                        </a>
+                    <div>
+                        <p class="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4" x-show="sidebarOpen">Aktivitas</p>
+                        <div class="space-y-1.5">
+                            <a href="{{ route('presensi.index') }}" 
+                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('presensi.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-calendar-check text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Presensi Magang</span>
+                            </a>
+                            <a href="{{ route('statistik.index') }}" 
+                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('statistik.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-chart-line text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Statistik Laporan</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
+
+                    <div>
+                        <p class="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4" x-show="sidebarOpen">Informasi PKL</p>
+                        <div class="space-y-1.5">
+                            <a href="{{ route('pengumuman.index') }}" 
+                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('pengumuman.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-bullhorn text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Pengumuman</span>
+                            </a>
+                            <a href="{{ route('panduan.index') }}" 
+                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('panduan.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-file-pdf text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Berkas PKL</span>
+                            </a>
+                            <a href="#" class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover text-white/80">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-users-gear text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Daftar Pembimbing</span>
+                            </a>
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <div class="p-6 border-t border-white/10 bg-black/10">
@@ -146,7 +170,9 @@
                         <i class="fa-solid fa-bars-staggered" x-show="sidebarOpen"></i>
                         <i class="fa-solid fa-bars" x-show="!sidebarOpen"></i>
                     </button>
-                    <h2 class="hidden md:block text-xs font-black text-indigo-100 uppercase tracking-[0.4em]">Portal Mahasiswa PKL</h2>
+                    <h2 class="hidden md:block text-xs font-black text-indigo-100 uppercase tracking-[0.4em]">
+                        {{ strtolower(Auth::user()->role) === 'admin' ? 'Portal Administrator' : 'Portal Mahasiswa PKL' }}
+                    </h2>
                 </div>
 
                 <div class="flex items-center gap-5">

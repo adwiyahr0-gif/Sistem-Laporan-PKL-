@@ -28,6 +28,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // --- TAMBAHAN LOGIKA REDIRECT BERDASARKAN ROLE ---
+        // Membaca input 'role' dari form login (mahasiswa/admin)
+        if ($request->role === 'admin') {
+            return redirect()->intended(route('admin.dashboard', absolute: false));
+        }
+
+        // Default redirect jika login sebagai mahasiswa
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

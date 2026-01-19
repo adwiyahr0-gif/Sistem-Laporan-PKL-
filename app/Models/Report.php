@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; // Tambahkan ini
 
 class Report extends Model
 {
@@ -13,4 +14,13 @@ class Report extends Model
         'kegiatan',
         'status',
     ];
+
+    /**
+     * Relasi ke model User
+     * Menghubungkan user_id di tabel reports ke id di tabel users
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

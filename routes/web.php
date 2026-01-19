@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\PresensiController; // Tambahkan ini
+use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\Admin\AdminController; // Namespace diperbaiki ke folder Admin
 use Illuminate\Support\Facades\Route;
 
 // --- GUEST ROUTE ---
@@ -10,7 +11,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// --- DASHBOARD ROUTE ---
+// --- DASHBOARD ROUTE (MAHASISWA) ---
 Route::get('/dashboard', [ReportController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -34,8 +35,7 @@ Route::middleware('auth')->group(function () {
     // --- MENU KATEGORI: AKTIVITAS ---
     Route::get('/statistik', [ReportController::class, 'statistik'])->name('statistik.index');
     
-    // --- FITUR PRESESI (DIPERBARUI) ---
-    // Sekarang menggunakan Controller, bukan Route::view lagi
+    // --- FITUR PRESESI ---
     Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi.index');
     Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
 
@@ -43,6 +43,24 @@ Route::middleware('auth')->group(function () {
     Route::view('/pengumuman', 'pengumuman')->name('pengumuman.index');
     Route::view('/panduan', 'panduan')->name('panduan.index');
     Route::view('/pembimbing', 'pembimbing')->name('pembimbing.index');
+
+    // ==========================================================
+    // --- KHUSUS ROUTE ADMIN (DIPERBARUI DENGAN GRUP) ---
+    // ==========================================================
+    Route::prefix('admin')->name('admin.')->group(function () {
+        // Halaman Statistik/Dashboard Admin
+        Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+        
+        // Halaman List Data Mahasiswa
+        Route::get('/students', [AdminController::class, 'students'])->name('students.index');
+
+        // --- Tambahan Route CRUD Mahasiswa ---
+        Route::get('/students/create', [AdminController::class, 'createStudent'])->name('students.create');
+        Route::post('/students', [AdminController::class, 'storeStudent'])->name('students.store');
+        Route::get('/students/{id}/edit', [AdminController::class, 'editStudent'])->name('students.edit');
+        Route::put('/students/{id}', [AdminController::class, 'updateStudent'])->name('students.update');
+        Route::delete('/students/{id}', [AdminController::class, 'destroyStudent'])->name('students.destroy');
+    });
 });
 
 require __DIR__.'/auth.php';
