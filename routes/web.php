@@ -3,8 +3,14 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PresensiController;
-use App\Http\Controllers\Admin\AdminController; // Namespace diperbaiki ke folder Admin
+use App\Http\Controllers\Admin\AdminController; 
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
 // --- GUEST ROUTE ---
 Route::get('/', function () {
@@ -45,21 +51,30 @@ Route::middleware('auth')->group(function () {
     Route::view('/pembimbing', 'pembimbing')->name('pembimbing.index');
 
     // ==========================================================
-    // --- KHUSUS ROUTE ADMIN (DIPERBARUI DENGAN GRUP) ---
+    // --- KHUSUS ROUTE ADMIN (LENGKAP) ---
     // ==========================================================
     Route::prefix('admin')->name('admin.')->group(function () {
+        
         // Halaman Statistik/Dashboard Admin
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         
-        // Halaman List Data Mahasiswa
+        // --- MANAJEMEN DATA MAHASISWA ---
         Route::get('/students', [AdminController::class, 'students'])->name('students.index');
-
-        // --- Tambahan Route CRUD Mahasiswa ---
         Route::get('/students/create', [AdminController::class, 'createStudent'])->name('students.create');
         Route::post('/students', [AdminController::class, 'storeStudent'])->name('students.store');
         Route::get('/students/{id}/edit', [AdminController::class, 'editStudent'])->name('students.edit');
         Route::put('/students/{id}', [AdminController::class, 'updateStudent'])->name('students.update');
         Route::delete('/students/{id}', [AdminController::class, 'destroyStudent'])->name('students.destroy');
+
+        // --- MANAJEMEN VALIDASI JURNAL ---
+        Route::get('/jurnal', [AdminController::class, 'validasiJurnal'])->name('jurnal.index');
+        // Fitur Setujui (Approve)
+        Route::patch('/jurnal/{id}/approve', [AdminController::class, 'approveJurnal'])->name('jurnal.approve');
+        // Fitur Tolak (Reject) - TAMBAHAN BARU
+        Route::patch('/jurnal/{id}/reject', [AdminController::class, 'rejectJurnal'])->name('jurnal.reject');
+
+        // --- MANAJEMEN REKAP PRESENSI ---
+        Route::get('/presensi', [AdminController::class, 'rekapPresensi'])->name('presensi.index');
     });
 });
 

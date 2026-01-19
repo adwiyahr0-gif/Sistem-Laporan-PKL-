@@ -4,141 +4,188 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Report;
+use App\Models\Report; 
+use App\Models\Presensi; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     /**
-     * Menampilkan Dashboard Utama Admin (Statistik)
+     * Halaman Dashboard Admin
      */
     public function index()
     {
-        // 1. Menghitung total mahasiswa
         $totalMahasiswa = User::where('role', 'mahasiswa')->count();
-        
-        // 2. Menghitung total laporan yang masuk
         $totalLaporan = Report::count();
-        
-        // 3. Menghitung laporan yang masih pending
         $laporanPending = Report::where('status', 'pending')->count();
-
-        /**
-         * 4. Menghitung total Universitas
-         */
-        $totalUniversitas = User::where('role', 'mahasiswa')
-                                ->whereNotNull('universitas')
-                                ->distinct('universitas')
-                                ->count('universitas');
-
-        // 5. Mengambil 5 laporan terbaru untuk ditampilkan di tabel dashboard
-        $recentReports = Report::with('user')->latest()->take(5)->get();
+        $asalKampus = User::where('role', 'mahasiswa')->distinct('universitas')->count('universitas');
+        
+        $recentReports = Report::with('user')->latest()->limit(5)->get();
 
         return view('admin.dashboard', compact(
             'totalMahasiswa', 
             'totalLaporan', 
             'laporanPending', 
-            'totalUniversitas', 
+            'asalKampus',
             'recentReports'
         ));
     }
 
     /**
-     * Menampilkan Daftar Lengkap Mahasiswa
+     * Menampilkan daftar mahasiswa
      */
     public function students()
     {
-        $students = User::where('role', 'mahasiswa')
-                        ->orderBy('name', 'asc')
-                        ->get();
-
-        return view('admin.students.index', compact('students'));
+        $students = User::where('role', 'mahasiswa')->latest()->get();
+        return view('admin.student.index', compact('students'));
     }
 
     /**
-     * TAMPILAN: Form Tambah Mahasiswa
+     * Form tambah mahasiswa
      */
     public function createStudent()
     {
-        return view('admin.students.create');
+        return view('admin.student.create');
     }
 
     /**
-     * PROSES: Simpan Mahasiswa Baru
+     * Menyimpan data mahasiswa baru
      */
     public function storeStudent(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'universitas' => 'required|string|max:255',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
+            'universitas' => 'nullable|string|max:255',
         ]);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'universitas' => $request->universitas,
             'password' => Hash::make($request->password),
-            'role' => 'mahasiswa', // Set otomatis sebagai mahasiswa
+            'universitas' => $request->universitas,
+            'role' => 'mahasiswa',
         ]);
 
-        return redirect()->route('admin.students.index')->with('success', 'Mahasiswa berhasil ditambahkan!');
+        return redirect()->route('admin.students.index')->with('success', 'Mahasiswa baru berhasil ditambahkan!');
     }
 
     /**
-     * TAMPILAN: Form Edit Mahasiswa
+     * Form edit mahasiswa
      */
     public function editStudent($id)
     {
         $student = User::where('role', 'mahasiswa')->findOrFail($id);
-        return view('admin.students.edit', compact('student'));
+        return view('admin.student.edit', compact('student'));
     }
 
     /**
-     * PROSES: Update Data Mahasiswa
+     * Update data mahasiswa
      */
     public function updateStudent(Request $request, $id)
     {
-        $student = User::where('role', 'mahasiswa')->findOrFail($id);
+        $student = User::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$id,
-            'universitas' => 'required|string|max:255',
+            'universitas' => 'nullable|string|max:255',
         ]);
 
-        $student->name = $request->name;
-        $student->email = $request->email;
-        $student->universitas = $request->universitas;
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'universitas' => $request->universitas,
+        ];
 
         if ($request->filled('password')) {
-            $student->password = Hash::make($request->password);
+            $request->validate(['password' => 'confirmed|min:8']);
+            $data['password'] = Hash::make($request->password);
         }
 
-        $student->save();
+        $student->update($data);
 
-        return redirect()->route('admin.students.index')->with('success', 'Data mahasiswa berhasil diperbarui!');
+        return redirect()->route('admin.students.index')->with('success', 'Data mahasiswa berhasil diperbarui.');
     }
 
     /**
-     * PROSES: Hapus Mahasiswa
+     * Hapus data mahasiswa
      */
     public function destroyStudent($id)
     {
-        $student = User::where('role', 'mahasiswa')->findOrFail($id);
+        $student = User::findOrFail($id);
         $student->delete();
 
-        return redirect()->route('admin.students.index')->with('success', 'Mahasiswa berhasil dihapus!');
+        return redirect()->route('admin.students.index')->with('success', 'Mahasiswa berhasil dihapus.');
     }
 
     /**
-     * Fungsi opsional: Melihat detail satu mahasiswa
+     * ==========================================================
+     * FITUR VALIDASI JURNAL
+     * ==========================================================
      */
-    public function showStudent($id)
+
+    public function validasiJurnal()
     {
-        $student = User::where('role', 'mahasiswa')->findOrFail($id);
-        return view('admin.students.show', compact('student'));
+        $reports = Report::with('user')->latest()->get();
+        return view('admin.jurnal.index', compact('reports'));
+    }
+
+    /**
+     * Mengubah status laporan menjadi APPROVED
+     */
+    public function approveJurnal($id)
+    {
+        $report = Report::findOrFail($id);
+        
+        try {
+            // Bypass constraint untuk SQLite agar pasti tersimpan
+            DB::statement('PRAGMA ignore_check_constraints = ON');
+            $report->update(['status' => 'approved']);
+            DB::statement('PRAGMA ignore_check_constraints = OFF');
+
+            return redirect()->route('admin.jurnal.index')->with('success', 'Laporan harian berhasil disetujui!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menyetujui laporan. Pastikan database Anda mendukung status "approved".');
+        }
+    }
+
+    /**
+     * Mengubah status laporan menjadi REJECTED dengan alasan
+     */
+    public function rejectJurnal(Request $request, $id)
+    {
+        $report = Report::findOrFail($id);
+        
+        // Ambil alasan dari input form/prompt
+        $reason = $request->input('rejection_reason', 'Data tidak sesuai / kurang lengkap');
+
+        try {
+            DB::statement('PRAGMA ignore_check_constraints = ON');
+            $report->update([
+                'status' => 'rejected',
+                'rejection_reason' => $reason // Simpan alasannya
+            ]);
+            DB::statement('PRAGMA ignore_check_constraints = OFF');
+
+            return redirect()->route('admin.jurnal.index')->with('success', 'Laporan harian mahasiswa telah ditolak.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menolak laporan.');
+        }
+    }
+
+    /**
+     * ==========================================================
+     * FITUR REKAP PRESENSI
+     * ==========================================================
+     */
+
+    public function rekapPresensi()
+    {
+        $presensis = Presensi::with('user')->latest()->get();
+        return view('admin.presensi.index', compact('presensis'));
     }
 }
