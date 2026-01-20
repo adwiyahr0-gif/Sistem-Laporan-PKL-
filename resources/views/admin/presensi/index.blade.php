@@ -4,71 +4,79 @@
         <p class="text-slate-500 font-medium">Pantau kehadiran mahasiswa PKL di Kominfo Binjai secara real-time.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-emerald-500 p-6 rounded-[24px] text-white shadow-lg shadow-emerald-200">
-            <p class="text-[10px] font-black uppercase opacity-80 tracking-widest">Hadir Hari Ini</p>
-            <h3 class="text-3xl font-black mt-1">{{ $presensis->where('created_at', '>=', today())->count() }}</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-emerald-500 rounded-[32px] p-8 text-white shadow-lg shadow-emerald-100 relative overflow-hidden">
+            <div class="relative z-10">
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-1">Hadir Hari Ini</p>
+                <h3 class="text-5xl font-black tracking-tighter">{{ $presensis->where('tanggal', date('Y-m-d'))->count() }}</h3>
+            </div>
+            <i class="fa-solid fa-users text-9xl absolute -right-4 -bottom-4 opacity-10"></i>
         </div>
-        <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm">
-            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Record</p>
-            <h3 class="text-3xl font-black text-slate-800 mt-1">{{ $presensis->count() }}</h3>
+        <div class="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+            <div class="relative z-10">
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">Total Record</p>
+                <h3 class="text-5xl font-black tracking-tighter text-slate-800">{{ $presensis->count() }}</h3>
+            </div>
+            <i class="fa-solid fa-database text-9xl absolute -right-4 -bottom-4 text-slate-50"></i>
         </div>
     </div>
 
     <div class="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
-        <table class="w-full text-left border-collapse">
+        <table class="w-full text-left">
             <thead>
                 <tr class="bg-slate-50/50 border-b border-slate-100">
+                    <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest w-16">No</th>
                     <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Mahasiswa</th>
                     <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Waktu Masuk</th>
                     <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Waktu Pulang</th>
-                    <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Status</th>
+                    <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Status</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
-                @forelse($presensis as $presensi)
+                @forelse($presensis as $attendance)
                 <tr class="hover:bg-slate-50/30 transition-colors">
+                    <td class="p-6 text-sm font-bold text-slate-400">
+                        {{ $loop->iteration }}
+                    </td>
                     <td class="p-6">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-indigo-100 text-[#4e5ecf] rounded-xl flex items-center justify-center font-black uppercase shadow-sm">
-                                {{ substr($presensi->user->name, 0, 1) }}
+                            <div class="w-10 h-10 bg-indigo-100 text-[#4e5ecf] rounded-xl flex items-center justify-center font-black uppercase text-xs">
+                                {{ substr($attendance->user->name, 0, 1) }}
                             </div>
                             <div>
-                                <p class="text-sm font-black text-slate-800">{{ $presensi->user->name }}</p>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase">{{ $presensi->created_at->format('d F Y') }}</p>
+                                <p class="text-sm font-black text-slate-800">{{ $attendance->user->name }}</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
+                                    {{ \Carbon\Carbon::parse($attendance->tanggal)->format('d F Y') }}
+                                </p>
                             </div>
                         </div>
                     </td>
                     <td class="p-6 text-center">
-                        <span class="px-4 py-2 bg-indigo-50 text-[#4e5ecf] rounded-xl font-black text-xs border border-indigo-100">
-                            <i class="fa-solid fa-right-to-bracket mr-1 text-[10px]"></i>
-                            {{ $presensi->jam_masuk ?? '--:--' }}
-                        </span>
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-[#4e5ecf] rounded-lg">
+                            <i class="fa-solid fa-right-to-bracket text-[10px]"></i>
+                            <span class="text-[10px] font-black">{{ $attendance->jam_masuk ?? '--:--' }}</span>
+                        </div>
                     </td>
                     <td class="p-6 text-center">
-                        <span class="px-4 py-2 bg-slate-50 text-slate-400 rounded-xl font-black text-xs border border-slate-100">
-                            <i class="fa-solid fa-right-from-bracket mr-1 text-[10px]"></i>
-                            {{ $presensi->jam_pulang ?? '--:--' }}
-                        </span>
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 text-slate-400 rounded-lg">
+                            <i class="fa-solid fa-right-from-bracket text-[10px]"></i>
+                            <span class="text-[10px] font-black">{{ $attendance->jam_pulang ?? '--:--' }}</span>
+                        </div>
                     </td>
-                    <td class="p-6">
-                        @php
-                            $isTerlambat = $presensi->jam_masuk > '08:00';
-                        @endphp
-                        @if($isTerlambat)
-                            <span class="px-3 py-1 bg-red-100 text-red-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Terlambat</span>
-                        @else
+                    <td class="p-6 text-center">
+                        @if($attendance->status == 'tepat waktu')
                             <span class="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Tepat Waktu</span>
+                        @else
+                            <span class="px-3 py-1 bg-rose-100 text-rose-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Terlambat</span>
                         @endif
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" class="p-20 text-center">
+                    <td colspan="5" class="p-20 text-center">
                         <div class="flex flex-col items-center">
-                            <i class="fa-solid fa-clock-rotate-left text-5xl text-slate-200 mb-6"></i>
-                            <h3 class="text-xl font-black text-slate-800">Belum Ada Data</h3>
-                            <p class="text-slate-400 max-w-md mx-auto mt-2 font-medium">Belum ada log kehadiran masuk dan pulang mahasiswa yang tercatat hari ini.</p>
+                            <i class="fa-solid fa-calendar-xmark text-4xl text-slate-200 mb-4"></i>
+                            <p class="text-slate-400 font-bold italic">Belum ada data presensi.</p>
                         </div>
                     </td>
                 </tr>

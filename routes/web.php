@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
     // --- MENU KATEGORI: AKTIVITAS ---
     Route::get('/statistik', [ReportController::class, 'statistik'])->name('statistik.index');
     
-    // --- FITUR PRESESI ---
+    // --- FITUR PRESENSI (SISI MAHASISWA) ---
     Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi.index');
     Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
 
@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
     // ==========================================================
     Route::prefix('admin')->name('admin.')->group(function () {
         
-        // Halaman Statistik/Dashboard Admin
+        // Halaman Statistik/Dashboard Admin (Mengarah ke AdminController)
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         
         // --- MANAJEMEN DATA MAHASISWA ---
@@ -68,13 +68,14 @@ Route::middleware('auth')->group(function () {
 
         // --- MANAJEMEN VALIDASI JURNAL ---
         Route::get('/jurnal', [AdminController::class, 'validasiJurnal'])->name('jurnal.index');
-        // Fitur Setujui (Approve)
         Route::patch('/jurnal/{id}/approve', [AdminController::class, 'approveJurnal'])->name('jurnal.approve');
-        // Fitur Tolak (Reject) - TAMBAHAN BARU
         Route::patch('/jurnal/{id}/reject', [AdminController::class, 'rejectJurnal'])->name('jurnal.reject');
 
         // --- MANAJEMEN REKAP PRESENSI ---
         Route::get('/presensi', [AdminController::class, 'rekapPresensi'])->name('presensi.index');
+        
+        // --- FITUR BARU: EXCEL EXPORT (OPSIONAL) ---
+        Route::get('/presensi/export', [AdminController::class, 'exportPresensi'])->name('presensi.export');
     });
 });
 

@@ -84,6 +84,7 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-slate-50/50">
                         <tr>
+                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 w-16">No</th>
                             <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Mahasiswa</th>
                             <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Kegiatan</th>
                             <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">Status</th>
@@ -93,6 +94,9 @@
                     <tbody class="divide-y divide-slate-50">
                         @forelse($recentReports as $report)
                         <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-8 py-5 text-sm font-bold text-slate-400">
+                                {{ $loop->iteration }}
+                            </td>
                             <td class="px-8 py-5">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
@@ -122,7 +126,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="px-8 py-10 text-center text-slate-400 text-sm italic">Belum ada laporan masuk.</td>
+                            <td colspan="5" class="px-8 py-10 text-center text-slate-400 text-sm italic">Belum ada laporan masuk.</td>
                         </tr>
                         @endforelse
                     </tbody>

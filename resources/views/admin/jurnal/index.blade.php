@@ -22,6 +22,7 @@
         <table class="w-full text-left">
             <thead>
                 <tr class="bg-slate-50/50 border-b border-slate-100">
+                    <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest w-16">No</th>
                     <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Mahasiswa</th>
                     <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Kegiatan</th>
                     <th class="p-6 text-[10px] font-black uppercase text-slate-400 tracking-widest text-center">Status</th>
@@ -31,6 +32,9 @@
             <tbody class="divide-y divide-slate-50">
                 @forelse($reports as $report)
                 <tr class="hover:bg-slate-50/30 transition-colors">
+                    <td class="p-6 text-sm font-bold text-slate-400">
+                        {{ $loop->iteration }}
+                    </td>
                     <td class="p-6">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-indigo-100 text-[#4e5ecf] rounded-xl flex items-center justify-center font-black uppercase">
@@ -89,7 +93,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" class="p-20 text-center">
+                    <td colspan="5" class="p-20 text-center">
                         <div class="flex flex-col items-center">
                             <i class="fa-solid fa-file-circle-exclamation text-4xl text-slate-200 mb-4"></i>
                             <p class="text-slate-400 font-bold italic">Belum ada laporan masuk.</p>

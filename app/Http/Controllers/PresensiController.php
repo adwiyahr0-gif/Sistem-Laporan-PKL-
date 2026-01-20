@@ -12,32 +12,37 @@ use Illuminate\Http\RedirectResponse;
 class PresensiController extends Controller
 {
     /**
-     * Menampilkan halaman utama presensi.
+     * Menampilkan halaman utama presensi dengan data real-time.
      */
     public function index(): View
     {
         $userId = Auth::id();
-        $today = Carbon::today()->toDateString();
         
-        // Mengambil data presensi user hari ini
+        // Memastikan waktu menggunakan zona Jakarta (WIB)
+        $now = Carbon::now('Asia/Jakarta');
+        $today = $now->toDateString();
+        
+        // 1. Ambil data presensi user hari ini
         $presensiHariIni = Presensi::where('user_id', $userId)
                                    ->where('tanggal', $today)
                                    ->first();
 
-        // Mengambil riwayat 5 hari terakhir untuk sidebar
+        // 2. Ambil riwayat 5 hari terakhir untuk sidebar/tabel bawah
         $riwayat = Presensi::where('user_id', $userId)
                            ->orderBy('tanggal', 'desc')
                            ->take(5)
                            ->get();
 
-        // Hitung ringkasan bulanan (opsional untuk card statistik)
+        // 3. Hitung ringkasan bulanan dengan validasi tahun & bulan berjalan
         $ringkasan = [
             'hadir' => Presensi::where('user_id', $userId)
-                                ->whereMonth('tanggal', Carbon::now()->month)
+                                ->whereMonth('tanggal', $now->month)
+                                ->whereYear('tanggal', $now->year)
                                 ->where('status', 'Hadir')
                                 ->count(),
             'terlambat' => Presensi::where('user_id', $userId)
-                                    ->whereMonth('tanggal', Carbon::now()->month)
+                                    ->whereMonth('tanggal', $now->month)
+                                    ->whereYear('tanggal', $now->year)
                                     ->where('status', 'Terlambat')
                                     ->count(),
         ];
@@ -51,18 +56,20 @@ class PresensiController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $userId = Auth::id();
-        $today = Carbon::today()->toDateString();
-        $now = Carbon::now();
+        
+        // Memastikan waktu simpan menggunakan zona Jakarta (WIB)
+        $now = Carbon::now('Asia/Jakarta');
+        $today = $now->toDateString();
 
-        // 1. LOGIKA ABSEN MASUK
+        // --- LOGIKA ABSEN MASUK ---
         if ($request->type === 'masuk') {
-            // Cek apakah sudah ada data hari ini untuk menghindari duplikat
+            // Cek duplikasi agar tidak bisa double absen masuk
             $exists = Presensi::where('user_id', $userId)->where('tanggal', $today)->exists();
             if ($exists) {
-                return back()->with('error', 'Anda sudah melakukan absen masuk hari ini.');
+                return back()->with('error', 'Opps! Anda sudah melakukan absen masuk hari ini.');
             }
 
-            // Batas jam masuk (Contoh: 08:00)
+            // Aturan jam kerja: Batas 08:00 WIB
             $jamMasuk = $now->format('H:i:s');
             $status = ($now->format('H:i') > '08:00') ? 'Terlambat' : 'Hadir';
 
@@ -71,12 +78,13 @@ class PresensiController extends Controller
                 'tanggal'   => $today,
                 'jam_masuk' => $jamMasuk,
                 'status'    => $status,
+                'lokasi'    => 'Kantor Kominfo Binjai', // Info lokasi untuk Admin
             ]);
 
-            return back()->with('success', 'Berhasil melakukan absen masuk pada ' . $jamMasuk);
+            return back()->with('success', 'Selamat bekerja! Absen masuk berhasil pada ' . $jamMasuk);
         }
 
-        // 2. LOGIKA ABSEN PULANG
+        // --- LOGIKA ABSEN PULANG ---
         if ($request->type === 'pulang') {
             $presensi = Presensi::where('user_id', $userId)
                                 ->where('tanggal', $today)
@@ -90,11 +98,18 @@ class PresensiController extends Controller
                 return back()->with('error', 'Anda sudah melakukan absen pulang hari ini.');
             }
 
+            $jamPulang = $now->toTimeString();
+
+            // Hitung durasi kerja untuk laporan Admin
+            $waktuMasuk = Carbon::parse($presensi->jam_masuk);
+            $durasiKerja = $waktuMasuk->diffForHumans($now, true); 
+
             $presensi->update([
-                'jam_pulang' => $now->toTimeString(),
+                'jam_pulang' => $jamPulang,
+                'keterangan' => 'Bekerja selama ' . $durasiKerja,
             ]);
 
-            return back()->with('success', 'Berhasil melakukan absen pulang pada ' . $now->format('H:i:s'));
+            return back()->with('success', 'Terima kasih atas dedikasinya! Absen pulang berhasil pada ' . $now->format('H:i:s'));
         }
 
         return back();
