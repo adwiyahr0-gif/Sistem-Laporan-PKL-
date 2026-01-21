@@ -20,6 +20,11 @@ class AdminController extends Controller
         $totalMahasiswa = User::where('role', 'mahasiswa')->count();
         $totalLaporan = Report::count();
         $laporanPending = Report::where('status', 'pending')->count();
+        
+        // Tambahan untuk statistik chart
+        $laporanApproved = Report::whereIn('status', ['approved', 'disetujui'])->count();
+        $laporanRejected = Report::where('status', 'rejected')->count();
+        
         $asalKampus = User::where('role', 'mahasiswa')->distinct('universitas')->count('universitas');
         
         $recentReports = Report::with('user')->latest()->limit(5)->get();
@@ -27,7 +32,9 @@ class AdminController extends Controller
         return view('admin.dashboard', compact(
             'totalMahasiswa', 
             'totalLaporan', 
-            'laporanPending', 
+            'laporanPending',
+            'laporanApproved',
+            'laporanRejected',
             'asalKampus',
             'recentReports'
         ));
