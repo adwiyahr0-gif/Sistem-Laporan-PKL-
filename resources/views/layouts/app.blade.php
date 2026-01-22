@@ -23,7 +23,6 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Hover effect untuk Sidebar berwarna */
         .menu-hover:hover {
             background: rgba(255, 255, 255, 0.1);
             transform: translateX(8px);
@@ -37,7 +36,6 @@
             border-radius: 10px; 
         }
 
-        /* Logo bulat besar dan elegan */
         .logo-circle {
             border-radius: 50%;
             background: white;
@@ -60,7 +58,12 @@
                 <div 
                     :class="sidebarOpen ? 'w-28 h-28' : 'w-14 h-14'"
                     class="sidebar-transition logo-circle flex items-center justify-center overflow-hidden">
-                    <img src="{{ asset('images/binjai_logo.png') }}" alt="Logo" class="w-full h-full object-contain">
+                    <img src="{{ asset('images/binjai_logo.png') }}" 
+                         alt="Logo" 
+                         class="w-full h-full object-contain"
+                         style="max-width: 100%; height: auto; width: 80px;"
+                         width="80"
+                         height="80">
                 </div>
                 
                 <div x-show="sidebarOpen" x-transition:enter="transition opacity-300" class="mt-6 text-center">
@@ -130,21 +133,17 @@
                     </div>
 
                     <div>
-                        <p class="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4" x-show="sidebarOpen">Informasi PKL</p>
+                        <p class="px-4 text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-4" x-show="sidebarOpen">Informasi</p>
                         <div class="space-y-1.5">
                             <a href="{{ route('pengumuman.index') }}" 
                                class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('pengumuman.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
                                 <div class="w-8 flex justify-center"><i class="fa-solid fa-bullhorn text-xl"></i></div>
                                 <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Pengumuman</span>
                             </a>
-                            <a href="{{ route('panduan.index') }}" 
-                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('panduan.index') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
-                                <div class="w-8 flex justify-center"><i class="fa-solid fa-file-pdf text-xl"></i></div>
-                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Berkas PKL</span>
-                            </a>
-                            <a href="#" class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover text-white/80">
-                                <div class="w-8 flex justify-center"><i class="fa-solid fa-users-gear text-xl"></i></div>
-                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Daftar Pembimbing</span>
+                            <a href="{{ route('profile.edit') }}" 
+                               class="flex items-center px-5 py-4 rounded-2xl transition-all duration-300 menu-hover {{ request()->routeIs('profile.*') ? 'bg-white text-[#4e5ecf] shadow-lg font-bold' : 'text-white/80' }}">
+                                <div class="w-8 flex justify-center"><i class="fa-solid fa-user-gear text-xl"></i></div>
+                                <span class="ml-3 text-sm tracking-wide" x-show="sidebarOpen">Profil Saya</span>
                             </a>
                         </div>
                     </div>
@@ -163,7 +162,6 @@
         </aside>
 
         <div class="flex-1 flex flex-col overflow-hidden">
-            
             <header class="bg-[#4e5ecf] text-white h-24 flex items-center justify-between px-10 z-20 shadow-lg border-b border-white/10">
                 <div class="flex items-center gap-6">
                     <button @click="sidebarOpen = !sidebarOpen" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/10 hover:bg-white/20 transition-all border border-white/20">
