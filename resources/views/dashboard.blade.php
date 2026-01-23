@@ -15,14 +15,16 @@
             <!-- Header Section -->
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4 animate-slide-down">
                 <div>
-                    <h2 class="text-4xl font-black tracking-tight uppercase">
+                    <h2 class="text-4xl font-black tracking-tight uppercase mb-2">
                         <span class="text-slate-800">DASHBOARD</span> 
                         <span class="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent animate-gradient-flow">MAHASISWA</span>
                     </h2>
-                    <p class="text-slate-500 font-medium mt-2 italic">
+                    <p class="text-slate-500 font-medium">
                         Selamat datang kembali, <span class="text-cyan-600 font-bold">{{ Auth::user()->name }}</span> di Portal E-Laporan PKL.
                     </p>
                 </div>
+                
+                <!-- Status Badge -->
                 <div class="group flex items-center gap-3 bg-gradient-to-br from-white to-slate-50 p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-cyan-500/20 hover:shadow-2xl hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-500 animate-bounce-subtle">
                     <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                         <i class="fa-solid fa-user-graduate text-2xl"></i>
@@ -54,7 +56,7 @@
                                     </div>
                                 </div>
                                 <div class="flex items-end gap-3">
-                                    <span class="text-5xl font-black bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">{{ $data['total'] }}</span>
+                                    <span class="text-5xl font-black bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">{{ $data['total'] ?? 0 }}</span>
                                     <span class="text-xs font-bold text-slate-400 mb-2.5 uppercase tracking-wider">Berkas</span>
                                 </div>
                             </div>
@@ -75,7 +77,7 @@
                                     </div>
                                 </div>
                                 <div class="flex items-end gap-3">
-                                    <span class="text-5xl font-black text-green-600 group-hover:scale-110 transition-transform duration-300">{{ $data['disetujui'] }}</span>
+                                    <span class="text-5xl font-black text-green-600 group-hover:scale-110 transition-transform duration-300">{{ $data['disetujui'] ?? 0 }}</span>
                                     <span class="text-xs font-bold text-slate-400 mb-2.5 uppercase tracking-wider">Valid</span>
                                 </div>
                             </div>
@@ -96,7 +98,7 @@
                                     </div>
                                 </div>
                                 <div class="flex items-end gap-3">
-                                    <span class="text-5xl font-black text-amber-500 group-hover:scale-110 transition-transform duration-300">{{ $data['pending'] }}</span>
+                                    <span class="text-5xl font-black text-amber-500 group-hover:scale-110 transition-transform duration-300">{{ $data['pending'] ?? 0 }}</span>
                                     <span class="text-xs font-bold text-slate-400 mb-2.5 uppercase tracking-wider">Review</span>
                                 </div>
                             </div>
@@ -106,12 +108,9 @@
                     </div>
 
                     <!-- Quick Access Section -->
-                    <div class="relative bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-900 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-indigo-500/30 overflow-hidden group hover:shadow-3xl hover:shadow-indigo-500/40 transition-all duration-500 animate-slide-up" style="animation-delay: 0.4s;">
+                    <div class="relative bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-900 rounded-3xl p-8 text-white shadow-2xl shadow-indigo-500/30 overflow-hidden group hover:shadow-3xl hover:shadow-indigo-500/40 transition-all duration-500 animate-slide-up" style="animation-delay: 0.4s;">
                         <!-- Background Effects -->
                         <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                        <div class="absolute right-0 bottom-0 opacity-5 group-hover:opacity-10 transition-opacity duration-500">
-                            <i class="fa-solid fa-paper-plane text-[180px] -rotate-12 translate-y-10 group-hover:translate-y-8 group-hover:rotate-[-8deg] transition-all duration-700"></i>
-                        </div>
                         <div class="absolute top-0 left-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl animate-pulse-slow"></div>
                         <div class="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1s;"></div>
                         
@@ -122,7 +121,7 @@
                                 </div>
                                 <h3 class="text-2xl font-black text-white uppercase tracking-wider">Akses Cepat Jurnal</h3>
                             </div>
-                            <p class="text-indigo-200 text-sm mb-8 max-w-md ml-15">Perbarui jurnal harian Anda secara rutin untuk mempermudah monitoring oleh pembimbing lapangan.</p>
+                            <p class="text-indigo-200 text-sm mb-8 ml-15">Perbarui jurnal harian Anda secara rutin untuk mempermudah monitoring oleh pembimbing lapangan.</p>
                             
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <a href="{{ route('reports.create') }}" class="group/btn relative flex items-center justify-between p-5 bg-white/10 backdrop-blur-md rounded-2xl hover:bg-white/20 transition-all duration-300 border border-white/10 hover:border-white/30 overflow-hidden hover:scale-105">
@@ -150,7 +149,7 @@
                 <!-- Sidebar -->
                 <div class="space-y-8">
                     <!-- Info System -->
-                    <div class="bg-gradient-to-br from-white to-slate-50 p-8 rounded-[2.5rem] border border-cyan-500/20 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-cyan-500/20 transition-all duration-500 group animate-slide-up" style="animation-delay: 0.5s;">
+                    <div class="bg-gradient-to-br from-white to-slate-50 p-8 rounded-3xl border border-cyan-500/20 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-cyan-500/20 transition-all duration-500 group animate-slide-up" style="animation-delay: 0.5s;">
                         <div class="flex items-center gap-4 mb-6">
                             <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                                 <i class="fa-solid fa-circle-info text-lg"></i>
@@ -183,7 +182,7 @@
                                     <p class="text-[10px] font-black text-cyan-600 uppercase tracking-widest">Periode Laporan</p>
                                 </div>
                                 <p class="font-black text-slate-700 text-base bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                                    {{ now()->startOfMonth()->translatedFormat('d M') }} — {{ now()->endOfMonth()->translatedFormat('d M Y') }}
+                                    01 Jan — 31 Jan 2026
                                 </p>
                             </div>
                         </div>
@@ -248,9 +247,7 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-slide-down {
-            animation: slide-down 0.6s ease-out;
-        }
+        .animate-slide-down { animation: slide-down 0.6s ease-out; }
 
         @keyframes slide-up {
             from { opacity: 0; transform: translateY(20px); }

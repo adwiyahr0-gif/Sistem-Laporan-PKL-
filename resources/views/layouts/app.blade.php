@@ -39,9 +39,12 @@
         .logo-circle {
             border-radius: 50%;
             background: white;
-            padding: 12px;
+            padding: 0; /* Kita atur ukuran lewat lebar gambar saja agar lebih akurat */
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             border: 4px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -57,13 +60,11 @@
             <div class="relative py-12 flex flex-col items-center border-b border-white/10">
                 <div 
                     :class="sidebarOpen ? 'w-28 h-28' : 'w-14 h-14'"
-                    class="sidebar-transition logo-circle flex items-center justify-center overflow-hidden">
+                    class="sidebar-transition logo-circle overflow-hidden">
+                    
                     <img src="{{ asset('images/binjai_logo.png') }}" 
                          alt="Logo" 
-                         class="w-full h-full object-contain"
-                         style="max-width: 100%; height: auto; width: 80px;"
-                         width="80"
-                         height="80">
+                         class="w-4/5 h-4/5 object-contain">
                 </div>
                 
                 <div x-show="sidebarOpen" x-transition:enter="transition opacity-300" class="mt-6 text-center">
