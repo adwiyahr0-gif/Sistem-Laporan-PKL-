@@ -21,7 +21,7 @@ class AdminController extends Controller
         $totalLaporan = Report::count();
         $laporanPending = Report::where('status', 'pending')->count();
         
-        // Tambahan untuk statistik chart
+        // Disinkronkan untuk menghitung baik 'approved' maupun 'disetujui'
         $laporanApproved = Report::whereIn('status', ['approved', 'disetujui'])->count();
         $laporanRejected = Report::where('status', 'rejected')->count();
         
@@ -142,21 +142,21 @@ class AdminController extends Controller
     }
 
     /**
-     * Mengubah status laporan menjadi APPROVED
+     * Mengubah status laporan menjadi DISETUJUI
      */
     public function approveJurnal($id)
     {
         $report = Report::findOrFail($id);
         
         try {
-            // Bypass constraint untuk SQLite agar pasti tersimpan
+            // Kita ubah statusnya menjadi 'disetujui' agar sesuai dengan pengecekan di view mahasiswa
             DB::statement('PRAGMA ignore_check_constraints = ON');
-            $report->update(['status' => 'approved']);
+            $report->update(['status' => 'disetujui']); 
             DB::statement('PRAGMA ignore_check_constraints = OFF');
 
             return redirect()->route('admin.jurnal.index')->with('success', 'Laporan harian berhasil disetujui!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menyetujui laporan. Pastikan database Anda mendukung status "approved".');
+            return redirect()->back()->with('error', 'Gagal menyetujui laporan.');
         }
     }
 
@@ -167,14 +167,13 @@ class AdminController extends Controller
     {
         $report = Report::findOrFail($id);
         
-        // Ambil alasan dari input form/prompt
         $reason = $request->input('rejection_reason', 'Data tidak sesuai / kurang lengkap');
 
         try {
             DB::statement('PRAGMA ignore_check_constraints = ON');
             $report->update([
                 'status' => 'rejected',
-                'rejection_reason' => $reason // Simpan alasannya
+                'rejection_reason' => $reason 
             ]);
             DB::statement('PRAGMA ignore_check_constraints = OFF');
 

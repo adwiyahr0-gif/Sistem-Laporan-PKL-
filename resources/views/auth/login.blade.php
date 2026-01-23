@@ -53,7 +53,7 @@
                     class="block w-full pl-12 pr-12 py-4 bg-gradient-to-r from-slate-800/40 to-slate-700/40 border border-cyan-500/30 rounded-2xl text-white placeholder-cyan-300/30 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-500 hover:border-cyan-400/60 hover:shadow-xl hover:shadow-cyan-500/30"
                     placeholder="••••••••">
 
-                <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center pr-4 text-black hover:opacity-70 transition-opacity duration-300 focus:outline-none">
+                <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center pr-4 text-cyan-400 hover:opacity-70 transition-opacity duration-300 focus:outline-none">
                     <i class="fa-solid fa-eye text-sm" id="eyeIcon"></i>
                 </button>
             </div>
@@ -75,7 +75,8 @@
 
         <div class="flex items-center justify-between px-2 animate-slide-up" style="animation-delay: 0.4s;">
             <label for="remember_me" class="inline-flex items-center cursor-pointer group/check">
-                <input id="remember_me" type="checkbox" name="remember" class="rounded border-cyan-500/30 bg-slate-800/40 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0 transition-all duration-300 hover:scale-110">
+                {{-- Penyesuaian: Menambahkan value="1" agar sinkron dengan Controller --}}
+                <input id="remember_me" type="checkbox" name="remember" value="1" class="rounded border-cyan-500/30 bg-slate-800/40 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0 transition-all duration-300 hover:scale-110">
                 <span class="ms-2 text-[10px] font-bold text-cyan-300/70 uppercase tracking-tighter italic group-hover/check:text-cyan-200 transition-all duration-300">Ingat Saya</span>
             </label>
             @if (Route::has('password.request'))

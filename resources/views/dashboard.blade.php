@@ -194,7 +194,6 @@
                             <i class="fa-solid fa-building text-white text-lg"></i>
                         </div>
                         <p class="text-[11px] font-black bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent uppercase tracking-[0.3em] mb-2">Dinas Kominfo Binjai</p>
-                        <p class="text-[10px] text-slate-500 font-medium">Sistem Monitoring Magang v1.0</p>
                     </div>
                 </div>
 

@@ -45,7 +45,7 @@
                         <tr class="bg-slate-50/80 border-b border-slate-100">
                             <th class="px-8 py-6 text-[11px] font-black text-slate-500 uppercase tracking-widest">Tanggal & Hari</th>
                             <th class="px-8 py-6 text-[11px] font-black text-slate-500 uppercase tracking-widest">Detail Kegiatan</th>
-                            <th class="px-8 py-6 text-[11px] font-black text-slate-500 uppercase tracking-widest text-center">Status Jurnal</th>
+                            <th class="px-8 py-6 text-[11px] font-black text-slate-500 uppercase tracking-widest text-center">Status Laporan</th>
                             <th class="px-8 py-6 text-[11px] font-black text-slate-500 uppercase tracking-widest text-right">Aksi</th>
                         </tr>
                     </thead>
@@ -64,9 +64,14 @@
                                 </p>
                             </td>
                             <td class="px-8 py-7 text-center">
-                                @if($report->status == 'disetujui')
+                                {{-- Logika Status yang sinkron dengan AdminController --}}
+                                @if($report->status == 'disetujui' || $report->status == 'approved')
                                     <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-100/80 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-200">
                                         <i class="fa-solid fa-check-double mr-2 text-[12px]"></i> Disetujui
+                                    </span>
+                                @elseif($report->status == 'rejected')
+                                    <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-red-100/80 text-red-700 text-[10px] font-black uppercase tracking-widest border border-red-200" title="{{ $report->rejection_reason }}">
+                                        <i class="fa-solid fa-circle-xmark mr-2 text-[12px]"></i> Ditolak
                                     </span>
                                 @else
                                     <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-amber-100/80 text-amber-700 text-[10px] font-black uppercase tracking-widest border border-amber-200">
@@ -79,11 +84,14 @@
                                     <a href="{{ route('reports.edit', $report->id) }}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 hover:shadow-sm transition-all" title="Edit">
                                         <i class="fa-solid fa-pen-to-square text-sm"></i>
                                     </a>
-                                    <form action="{{ route('reports.destroy', $report->id) }}" method="POST" onsubmit="return confirm('Hapus laporan ini?')">
+                                    
+                                    {{-- Tombol Hapus dengan SweetAlert --}}
+                                    <button type="button" onclick="confirmDelete('{{ $report->id }}')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 hover:shadow-sm transition-all" title="Hapus">
+                                        <i class="fa-solid fa-trash-can text-sm"></i>
+                                    </button>
+
+                                    <form id="delete-form-{{ $report->id }}" action="{{ route('reports.destroy', $report->id) }}" method="POST" class="hidden">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 hover:shadow-sm transition-all" title="Hapus">
-                                            <i class="fa-solid fa-trash-can text-sm"></i>
-                                        </button>
                                     </form>
                                 </div>
                             </td>
@@ -106,4 +114,49 @@
             </div>
         </div>
     </div>
+
+    {{-- Script untuk Notifikasi dan Konfirmasi --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 1. Notifikasi Sukses (Simpan/Update/Hapus)
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 2500,
+                background: '#ffffff',
+                customClass: {
+                    popup: 'rounded-[2rem]',
+                    title: 'font-black text-slate-800',
+                    htmlContainer: 'font-medium text-slate-500'
+                }
+            });
+        @endif
+
+        // 2. Konfirmasi Hapus Laporan
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Hapus Laporan?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#94a3b8',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                background: '#ffffff',
+                customClass: {
+                    popup: 'rounded-[2rem]',
+                    confirmButton: 'rounded-xl px-6 py-3 font-bold uppercase text-xs tracking-widest',
+                    cancelButton: 'rounded-xl px-6 py-3 font-bold uppercase text-xs tracking-widest'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            })
+        }
+    </script>
 </x-app-layout>

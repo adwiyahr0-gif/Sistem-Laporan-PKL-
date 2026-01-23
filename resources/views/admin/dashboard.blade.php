@@ -113,7 +113,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Status Laporan</h3>
-                        <p class="text-sm text-slate-500 mt-1">Distribusi status validasi jurnal</p>
+                        <p class="text-sm text-slate-500 mt-1">Distribusi status validasi Laporan</p>
                     </div>
                     <div class="w-12 h-12 bg-indigo-500/10 rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
                         <i class="fa-solid fa-chart-pie text-indigo-500 text-xl"></i>
@@ -232,7 +232,7 @@
             <div class="p-6 md:p-8 border-b border-slate-200 bg-gradient-to-r from-indigo-50/50 to-transparent">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl font-black text-slate-800 uppercase tracking-tight">Laporan Jurnal Terbaru</h2>
+                        <h2 class="text-2xl font-black text-slate-800 uppercase tracking-tight">Laporan Terbaru</h2>
                         <p class="text-sm text-slate-500 mt-1">Memerlukan peninjauan dan validasi pembimbing</p>
                     </div>
                     <a href="{{ route('admin.jurnal.index') }}" class="group/btn relative px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/50 transition-all duration-300 hover:scale-105 overflow-hidden">

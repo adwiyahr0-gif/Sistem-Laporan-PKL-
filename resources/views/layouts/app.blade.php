@@ -156,7 +156,7 @@
                     @csrf
                     <button type="submit" class="flex items-center justify-center w-full p-4 bg-red-500 hover:bg-red-600 text-white rounded-2xl transition-all duration-300 shadow-lg font-bold">
                         <i class="fa-solid fa-power-off text-lg"></i>
-                        <span class="ml-3 font-black text-[10px] uppercase tracking-widest" x-show="sidebarOpen">Keluar Sistem</span>
+                        <span class="ml-3 font-black text-[10px] uppercase tracking-widest" x-show="sidebarOpen">Keluar</span>
                     </button>
                 </form>
             </div>

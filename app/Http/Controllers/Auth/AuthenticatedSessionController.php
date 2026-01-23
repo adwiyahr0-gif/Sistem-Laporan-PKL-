@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,17 +25,22 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        // 1. Tangkap status 'Ingat Saya' dari checkbox
+        $remember = $request->boolean('remember');
 
+        // 2. Proses login dengan menyertakan variabel $remember
+        $request->authenticate($remember);
+
+        // 3. Regenerasi session untuk keamanan
         $request->session()->regenerate();
 
-        // --- TAMBAHAN LOGIKA REDIRECT BERDASARKAN ROLE ---
-        // Membaca input 'role' dari form login (mahasiswa/admin)
+        // --- LOGIKA REDIRECT BERDASARKAN ROLE ---
+        // Jika user memilih role 'admin' di form atau memang memiliki role admin
         if ($request->role === 'admin') {
             return redirect()->intended(route('admin.dashboard', absolute: false));
         }
 
-        // Default redirect jika login sebagai mahasiswa
+        // Default redirect untuk mahasiswa
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Detail Pekerjaan</label>
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Detail Kegiatan</label>
                     <textarea name="kegiatan" rows="6" required 
                         class="w-full bg-slate-50 border-none rounded-[2rem] px-6 py-4 text-sm font-medium text-slate-600 leading-relaxed focus:ring-4 focus:ring-indigo-100 transition-all outline-none">{{ $report->kegiatan }}</textarea>
                 </div>

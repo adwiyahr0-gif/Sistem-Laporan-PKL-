@@ -18,7 +18,7 @@
                         <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg shadow-indigo-200">
                             <i class="fa-solid fa-pen-nib"></i>
                         </div>
-                        <h2 class="text-3xl font-black text-slate-800 tracking-tight">Buat Jurnal Baru</h2>
+                        <h2 class="text-3xl font-black text-slate-800 tracking-tight">Buat Laporan Baru</h2>
                         <p class="text-sm text-slate-500 mt-2 font-medium">Isi detail aktivitas magang Anda dengan jelas dan jujur.</p>
                     </div>
 
@@ -50,7 +50,7 @@
 
                         <div class="pt-4">
                             <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-2xl shadow-xl shadow-indigo-200 transition-all transform hover:scale-[1.01] active:scale-[0.98] uppercase tracking-[0.2em] text-xs">
-                                <i class="fa-solid fa-paper-plane mr-2"></i> Simpan Jurnal Kegiatan
+                                <i class="fa-solid fa-paper-plane mr-2"></i> Simpan Laporan Kegiatan
                             </button>
                         </div>
                     </form>

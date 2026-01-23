@@ -57,7 +57,7 @@
 
                 <a href="{{ route('admin.jurnal.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl {{ request()->routeIs('admin.jurnal.*') ? 'bg-white text-indigo-600 shadow-md' : 'hover:bg-white/10 text-white' }} transition-all">
                     <i class="fa-solid fa-file-signature text-lg"></i>
-                    <span class="text-sm font-bold">Validasi Jurnal</span>
+                    <span class="text-sm font-bold">Validasi Laporan</span>
                 </a>
 
                 <a href="{{ route('admin.presensi.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl {{ request()->routeIs('admin.presensi.*') ? 'bg-white text-indigo-600 shadow-md' : 'hover:bg-white/10 text-white' }} transition-all">

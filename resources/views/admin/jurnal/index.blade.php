@@ -1,6 +1,6 @@
 <x-admin-layout>
     <div class="mb-8">
-        <h1 class="text-2xl font-black text-slate-800 tracking-tighter uppercase">Validasi Jurnal Mahasiswa</h1>
+        <h1 class="text-2xl font-black text-slate-800 tracking-tighter uppercase">Validasi Laporan Mahasiswa</h1>
         <p class="text-slate-500 font-medium">Tinjau dan berikan persetujuan atau penolakan untuk laporan kegiatan mahasiswa.</p>
     </div>
 
