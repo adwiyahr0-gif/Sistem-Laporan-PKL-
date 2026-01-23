@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
     // ==========================================================
     Route::prefix('admin')->name('admin.')->group(function () {
         
-        // Halaman Statistik/Dashboard Admin (Mengarah ke AdminController)
+        // Halaman Statistik/Dashboard Admin
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         
         // --- MANAJEMEN DATA MAHASISWA ---
@@ -73,6 +73,11 @@ Route::middleware('auth')->group(function () {
 
         // --- MANAJEMEN REKAP PRESENSI ---
         Route::get('/presensi', [AdminController::class, 'rekapPresensi'])->name('presensi.index');
+
+        // --- FITUR BARU: KELOLA ADMIN ---
+        Route::get('/manage', [AdminController::class, 'manageAdmin'])->name('manage');
+        Route::post('/manage/store', [AdminController::class, 'storeAdmin'])->name('store');
+        Route::delete('/manage/{admin}', [AdminController::class, 'destroyAdmin'])->name('destroy');
         
         // --- FITUR BARU: EXCEL EXPORT (OPSIONAL) ---
         Route::get('/presensi/export', [AdminController::class, 'exportPresensi'])->name('presensi.export');

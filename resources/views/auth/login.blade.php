@@ -80,8 +80,6 @@
                 <span class="ms-2 text-[10px] font-bold text-cyan-300/70 uppercase tracking-tighter italic group-hover/check:text-cyan-200 transition-all duration-300">Ingat Saya</span>
             </label>
             @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" class="text-[10px] font-bold text-cyan-400 hover:text-blue-300 transition-all duration-300 uppercase tracking-tighter relative group/link">
-                    Lupa Sandi?
                     <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-400 group-hover/link:w-full transition-all duration-500"></span>
                 </a>
             @endif

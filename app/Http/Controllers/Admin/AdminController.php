@@ -194,4 +194,18 @@ class AdminController extends Controller
         $presensis = Presensi::with('user')->latest()->get();
         return view('admin.presensi.index', compact('presensis'));
     }
+
+    /**
+     * ==========================================================
+     * FITUR KELOLA ADMIN (BARU ditambahkan)
+     * ==========================================================
+     */
+    public function manageAdmin()
+    {
+        // Mengambil semua user yang memiliki role 'admin'
+        $admins = User::where('role', 'admin')->get();
+
+        // Mengarahkan ke file resources/views/admin/manage.blade.php
+        return view('admin.manage', compact('admins'));
+    }
 }

@@ -53,6 +53,11 @@
                     <span class="text-sm font-bold">Data Mahasiswa</span>
                 </a>
 
+                <a href="{{ route('admin.manage') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl {{ request()->routeIs('admin.manage') ? 'bg-white text-indigo-600 shadow-md' : 'hover:bg-white/10 text-white' }} transition-all">
+                    <i class="fa-solid fa-user-shield text-lg"></i>
+                    <span class="text-sm font-bold">Kelola Admin</span>
+                </a>
+
                 <p class="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em] mt-8 mb-4 px-4 italic">Laporan & Absensi</p>
 
                 <a href="{{ route('admin.jurnal.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-2xl {{ request()->routeIs('admin.jurnal.*') ? 'bg-white text-indigo-600 shadow-md' : 'hover:bg-white/10 text-white' }} transition-all">
