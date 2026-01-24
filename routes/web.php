@@ -53,7 +53,8 @@ Route::middleware('auth')->group(function () {
     // ==========================================================
     // --- KHUSUS ROUTE ADMIN (LENGKAP) ---
     // ==========================================================
-    Route::prefix('admin')->name('admin.')->group(function () {
+    // Ditambahkan middleware 'can:admin-only' agar mahasiswa tidak bisa tembus lewat URL
+    Route::prefix('admin')->name('admin.')->middleware('can:admin-only')->group(function () {
         
         // Halaman Statistik/Dashboard Admin
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
