@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
 
         // --- FITUR BARU: KELOLA ADMIN ---
         Route::get('/manage', [AdminController::class, 'manageAdmin'])->name('manage');
+        Route::get('/manage/create', [AdminController::class, 'createAdmin'])->name('manage.create'); 
         Route::post('/manage/store', [AdminController::class, 'storeAdmin'])->name('store');
         Route::delete('/manage/{admin}', [AdminController::class, 'destroyAdmin'])->name('destroy');
         

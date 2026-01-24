@@ -1,65 +1,96 @@
 <x-admin-layout>
-    <div class="space-y-8">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Data Mahasiswa PKL</h1>
-                <p class="text-slate-500 text-sm mt-1">Kelola akun dan informasi mahasiswa yang sedang magang.</p>
-            </div>
-            <a href="#" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-bold transition-all shadow-sm flex items-center gap-2 w-fit">
-                <i class="fa-solid fa-plus"></i> Tambah Mahasiswa
-            </a>
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-black text-slate-800 uppercase tracking-tight leading-none">Data Mahasiswa PKL</h2>
+            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mt-2 opacity-70">Kelola akun dan informasi mahasiswa yang sedang magang.</p>
         </div>
-
-        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-slate-50/50">
-                        <tr>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 w-16">No</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Mahasiswa</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Email</th>
-                            <th class="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-50">
-                        @forelse($students as $student)
-                        <tr class="hover:bg-slate-50/50 transition-colors group">
-                            <td class="px-8 py-5 text-sm font-bold text-slate-400">
-                                {{ $loop->iteration }}
-                            </td>
-                            <td class="px-8 py-5">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold uppercase">
-                                        {{ substr($student->name, 0, 1) }}
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold text-slate-800">{{ $student->name }}</p>
-                                        <p class="text-[10px] text-slate-400 font-bold">{{ $student->universitas ?? 'Tanpa Instansi' }}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-8 py-5">
-                                <p class="text-sm text-slate-600 font-medium">{{ $student->email }}</p>
-                            </td>
-                            <td class="px-8 py-5 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <a href="#" class="p-2 text-orange-500 hover:bg-orange-50 rounded-lg transition-all" title="Edit">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                    <button type="button" class="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-all" title="Hapus">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="px-8 py-10 text-center text-slate-400 text-sm italic">Belum ada data mahasiswa.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+        <div class="flex items-center gap-4">
+            <button type="button" id="btnTambahMahasiswa" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-indigo-200 transition-all duration-300 hover:shadow-xl hover:scale-105">
+                <i class="fa-solid fa-plus mr-2"></i>Tambah Mahasiswa
+            </button>
         </div>
     </div>
+
+    @if(session('success'))
+    <div class="mb-6 p-4 bg-emerald-500 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-emerald-100 flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-lg"></i>
+        {{ session('success') }}
+    </div>
+    @endif
+
+    <div class="bg-white rounded-[2.5rem] shadow-2xl shadow-indigo-100/50 overflow-hidden border border-slate-100">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50/50 border-b border-slate-100">
+                    <tr>
+                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">No</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Mahasiswa</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Email</th>
+                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse($students as $index => $student)
+                    <tr class="hover:bg-indigo-50/40 transition-all duration-300">
+                        <td class="px-8 py-6 text-sm font-black text-slate-300">{{ $index + 1 }}</td>
+                        <td class="px-8 py-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-black shadow-sm uppercase">
+                                    {{ substr($student->name, 0, 1) }}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-black text-slate-800 uppercase tracking-tight">{{ $student->name }}</p>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase">{{ $student->universitas ?? 'Tanpa Instansi' }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            <span class="text-sm font-bold text-slate-600">{{ $student->email }}</span>
+                        </td>
+                        <td class="px-8 py-6">
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('admin.students.edit', $student->id) }}" class="p-2 bg-amber-100 hover:bg-amber-200 text-amber-600 rounded-xl transition-all">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+
+                                <form action="{{ route('admin.students.destroy', $student->id) }}" method="POST" id="form-delete-{{ $student->id }}" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" onclick="confirmDelete('{{ $student->id }}')" class="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-xl transition-all">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="px-8 py-12 text-center text-slate-400 font-bold uppercase text-xs tracking-widest">
+                            Belum ada data mahasiswa.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Handle Tombol Tambah (Redirect ke halaman create)
+            const btnTambah = document.getElementById('btnTambahMahasiswa');
+            if(btnTambah) {
+                btnTambah.addEventListener('click', function() {
+                    window.location.href = "{{ route('admin.students.create') }}";
+                });
+            }
+
+            // 2. Handle Konfirmasi Hapus
+            window.confirmDelete = function(id) {
+                if (confirm('Yakin ingin menghapus mahasiswa ini? Menghapus mahasiswa akan otomatis menghapus seluruh data laporan dan absensi mereka.')) {
+                    document.getElementById('form-delete-' + id).submit();
+                }
+            }
+        });
+    </script>
 </x-admin-layout>

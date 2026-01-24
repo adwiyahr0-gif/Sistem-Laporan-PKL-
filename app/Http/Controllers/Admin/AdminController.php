@@ -124,9 +124,20 @@ class AdminController extends Controller
     public function destroyStudent($id)
     {
         $student = User::findOrFail($id);
-        $student->delete();
+        
+        try {
+            // Logika Tambahan: Hapus semua data yang terhubung dengan mahasiswa ini
+            // agar tidak terjadi error foreign key constraint
+            Report::where('user_id', $student->id)->delete();
+            Presensi::where('user_id', $student->id)->delete();
+            
+            // Hapus akun mahasiswanya
+            $student->delete();
 
-        return redirect()->route('admin.students.index')->with('success', 'Mahasiswa berhasil dihapus.');
+            return redirect()->route('admin.students.index')->with('success', 'Mahasiswa dan seluruh data terkait (Laporan & Absensi) berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus mahasiswa: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -197,15 +208,69 @@ class AdminController extends Controller
 
     /**
      * ==========================================================
-     * FITUR KELOLA ADMIN (BARU ditambahkan)
+     * FITUR KELOLA ADMIN
      * ==========================================================
      */
     public function manageAdmin()
     {
         // Mengambil semua user yang memiliki role 'admin'
-        $admins = User::where('role', 'admin')->get();
+        $admins = User::where('role', 'admin')->latest()->get();
 
         // Mengarahkan ke file resources/views/admin/manage.blade.php
         return view('admin.manage', compact('admins'));
+    }
+
+    /**
+     * Form tambah admin baru
+     */
+    public function createAdmin()
+    {
+        return view('admin.manage_create');
+    }
+
+    /**
+     * Simpan data admin baru
+     */
+    public function storeAdmin(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        try {
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'admin', // Otomatis set sebagai admin
+            ]);
+
+            return redirect()->route('admin.manage')->with('success', 'Admin baru berhasil didaftarkan!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mendaftarkan admin: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Hapus data admin
+     */
+    public function destroyAdmin($id)
+    {
+        // Pastikan user yang dihapus memang admin
+        $admin = User::where('role', 'admin')->findOrFail($id);
+        
+        // Mencegah admin menghapus dirinya sendiri
+        if (auth()->id() == $admin->id) {
+            return redirect()->back()->with('error', 'Anda tidak bisa menghapus akun Anda sendiri saat sedang login!');
+        }
+
+        try {
+            $admin->delete();
+            return redirect()->route('admin.manage')->with('success', 'Akun admin berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
+        }
     }
 }
