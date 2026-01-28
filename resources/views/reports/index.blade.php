@@ -20,9 +20,9 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             @php
                 $stats = [
-                    ['label' => 'Total Laporan', 'value' => $reports->count(), 'icon' => 'fa-folder-open', 'color' => 'indigo', 'bg' => 'bg-indigo-50', 'text' => 'text-indigo-600'],
-                    ['label' => 'Disetujui', 'value' => $reports->where('status', 'disetujui')->count(), 'icon' => 'fa-circle-check', 'color' => 'emerald', 'bg' => 'bg-emerald-50', 'text' => 'text-emerald-600'],
-                    ['label' => 'Menunggu', 'value' => $reports->where('status', 'pending')->count(), 'icon' => 'fa-clock', 'color' => 'amber', 'bg' => 'bg-amber-50', 'text' => 'text-amber-600'],
+                    ['label' => 'Total Laporan', 'value' => $reports->total(), 'icon' => 'fa-folder-open', 'color' => 'indigo', 'bg' => 'bg-indigo-50', 'text' => 'text-indigo-600'],
+                    ['label' => 'Disetujui', 'value' => \App\Models\Report::where('user_id', Auth::id())->where('status', 'disetujui')->count(), 'icon' => 'fa-circle-check', 'color' => 'emerald', 'bg' => 'bg-emerald-50', 'text' => 'text-emerald-600'],
+                    ['label' => 'Menunggu', 'value' => \App\Models\Report::where('user_id', Auth::id())->where('status', 'pending')->count(), 'icon' => 'fa-clock', 'color' => 'amber', 'bg' => 'bg-amber-50', 'text' => 'text-amber-600'],
                 ];
             @endphp
             @foreach($stats as $stat)
@@ -64,7 +64,6 @@
                                 </p>
                             </td>
                             <td class="px-8 py-7 text-center">
-                                {{-- Logika Status yang sinkron dengan AdminController --}}
                                 @if($report->status == 'disetujui' || $report->status == 'approved')
                                     <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-100/80 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-200">
                                         <i class="fa-solid fa-check-double mr-2 text-[12px]"></i> Disetujui
@@ -85,7 +84,6 @@
                                         <i class="fa-solid fa-pen-to-square text-sm"></i>
                                     </a>
                                     
-                                    {{-- Tombol Hapus dengan SweetAlert --}}
                                     <button type="button" onclick="confirmDelete('{{ $report->id }}')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 hover:shadow-sm transition-all" title="Hapus">
                                         <i class="fa-solid fa-trash-can text-sm"></i>
                                     </button>
@@ -112,13 +110,17 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- BAGIAN PAGINATION --}}
+            <div class="px-8 py-6 bg-slate-50/50 border-t border-slate-100">
+                {{ $reports->links() }}
+            </div>
         </div>
     </div>
 
     {{-- Script untuk Notifikasi dan Konfirmasi --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // 1. Notifikasi Sukses (Simpan/Update/Hapus)
         @if(session('success'))
             Swal.fire({
                 icon: 'success',
@@ -135,7 +137,6 @@
             });
         @endif
 
-        // 2. Konfirmasi Hapus Laporan
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Hapus Laporan?',

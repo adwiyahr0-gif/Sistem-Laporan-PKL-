@@ -27,13 +27,13 @@ class ReportController extends Controller
     }
 
     /**
-     * Halaman Daftar Laporan Harian (Index)
+     * Halaman Daftar Laporan Harian (Index) - LIMIT 5 DATA
      */
     public function index(): View
     {
         $reports = Report::where('user_id', Auth::id())
                          ->latest('tanggal')
-                         ->get();
+                         ->paginate(5); // Sekarang limit menjadi 5 data per halaman
 
         return view('reports.index', compact('reports'));
     }
@@ -67,30 +67,27 @@ class ReportController extends Controller
     }
 
     /**
-     * FITUR STATISTIK: Dinamis & Formal (Updated)
+     * FITUR STATISTIK: Dinamis & Formal - LIMIT 5 DATA
      */
     public function statistik(): View
     {
         $userId = Auth::id();
         
-        // Mengambil semua laporan milik user untuk ringkasan (Cards)
+        // Mengambil laporan dengan pagination untuk tabel di bawah chart
         $reports = Report::where('user_id', $userId)
                          ->latest('tanggal')
-                         ->get();
+                         ->paginate(5); // Tetap 5 data agar proporsional dengan chart
 
         // Persiapan data untuk Diagram Garis (7 Hari Terakhir)
         $chartData = [];
         $days = [];
         
         for ($i = 6; $i >= 0; $i--) {
-            // Mengambil tanggal mundur dari hari ini
             $carbonDate = Carbon::now()->subDays($i);
             $dateString = $carbonDate->format('Y-m-d');
             
-            // Format label hari untuk diagram (Contoh: 15 Jan)
             $days[] = $carbonDate->translatedFormat('d M'); 
             
-            // Hitung jumlah laporan secara dinamis berdasarkan user dan tanggal
             $chartData[] = Report::where('user_id', $userId)
                                  ->whereDate('tanggal', $dateString)
                                  ->count();
@@ -107,7 +104,7 @@ class ReportController extends Controller
         $user = Auth::user();
         $reports = Report::where('user_id', $user->id)
                          ->orderBy('tanggal', 'asc')
-                         ->get();
+                         ->get(); // Untuk PDF tetap ambil semua data (get)
 
         $pdf = Pdf::loadView('reports.pdf', [
             'reports' => $reports,

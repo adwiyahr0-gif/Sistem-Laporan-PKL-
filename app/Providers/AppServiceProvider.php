@@ -3,7 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Gate; // Tambahan: Untuk fitur keamanan role
+use Illuminate\Support\Facades\Gate; // Untuk fitur keamanan role
+use Illuminate\Pagination\Paginator; // Tambahan: Import Paginator untuk Pagination
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Tambahan: Mendefinisikan aturan bahwa 'admin-only' hanya untuk user dengan role admin
+        // 1. Mengaktifkan Pagination menggunakan style Tailwind CSS
+        Paginator::useTailwind();
+
+        // 2. Mendefinisikan aturan bahwa 'admin-only' hanya untuk user dengan role admin
         Gate::define('admin-only', function ($user) {
             return $user->role === 'admin';
         });
