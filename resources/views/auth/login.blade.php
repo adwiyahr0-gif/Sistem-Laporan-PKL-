@@ -1,4 +1,7 @@
 <x-guest-layout>
+    {{-- Tambahan library SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -39,7 +42,6 @@
                     class="block w-full pl-12 pr-4 py-4 bg-gradient-to-r from-slate-800/40 to-slate-700/40 border border-cyan-500/30 rounded-2xl text-white placeholder-cyan-300/30 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all duration-500 hover:border-cyan-400/60 hover:shadow-xl hover:shadow-cyan-500/30"
                     placeholder="nama@email.com">
             </div>
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <div class="relative group animate-slide-up" style="animation-delay: 0.2s;">
@@ -57,7 +59,6 @@
                     <i class="fa-solid fa-eye text-sm" id="eyeIcon"></i>
                 </button>
             </div>
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <div class="relative group animate-slide-up" style="animation-delay: 0.3s;">
@@ -75,11 +76,12 @@
 
         <div class="flex items-center justify-between px-2 animate-slide-up" style="animation-delay: 0.4s;">
             <label for="remember_me" class="inline-flex items-center cursor-pointer group/check">
-                {{-- Penyesuaian: Menambahkan value="1" agar sinkron dengan Controller --}}
                 <input id="remember_me" type="checkbox" name="remember" value="1" class="rounded border-cyan-500/30 bg-slate-800/40 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-0 transition-all duration-300 hover:scale-110">
                 <span class="ms-2 text-[10px] font-bold text-cyan-300/70 uppercase tracking-tighter italic group-hover/check:text-cyan-200 transition-all duration-300">Ingat Saya</span>
             </label>
             @if (Route::has('password.request'))
+                <a class="relative group/link text-[10px] font-bold text-cyan-400 uppercase tracking-tighter transition-all duration-300 hover:text-white" href="{{ route('password.request') }}">
+                    Lupa Password?
                     <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-400 group-hover/link:w-full transition-all duration-500"></span>
                 </a>
             @endif
@@ -155,5 +157,36 @@
                 eyeIcon.toggleClass('fa-eye fa-eye-slash');
             });
         });
+
+        // --- Logic SweetAlert Custom ---
+        @if ($errors->any())
+            @php
+                $rawError = $errors->first();
+                $title = 'Akses Ditolak';
+                $message = 'Email atau password yang Anda masukkan salah. Silakan coba lagi.';
+                
+                // Cek jika error mengandung kata kunci role mismatch dari sistem
+                if (strpos(strtolower($rawError), 'credentials') !== false) {
+                    $message = 'Email atau password yang Anda masukkan salah. Silakan coba lagi.';
+                } else {
+                    // Jika kamu mengirimkan pesan custom dari controller, tampilkan pesan tersebut
+                    $message = $rawError;
+                }
+            @endphp
+
+            Swal.fire({
+                icon: 'error',
+                title: '{{ $title }}',
+                text: '{!! $message !!}',
+                background: '#1e293b',
+                color: '#fff',
+                confirmButtonColor: '#0891b2',
+                confirmButtonText: 'COBA LAGI',
+                customClass: {
+                    popup: 'rounded-[2rem] border border-cyan-500/30 shadow-2xl shadow-cyan-500/20',
+                    confirmButton: 'rounded-xl px-8 py-3 uppercase font-black text-[10px] tracking-widest'
+                }
+            });
+        @endif
     </script>
 </x-guest-layout>
