@@ -5,14 +5,14 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-6 p-4 bg-emerald-500 text-white rounded-2xl font-bold shadow-lg shadow-emerald-200 flex items-center gap-3">
+        <div class="mb-6 p-4 bg-emerald-500 text-white rounded-2xl font-bold shadow-lg flex items-center gap-3">
             <i class="fa-solid fa-circle-check"></i>
             {{ session('success') }}
         </div>
     @endif
 
     @if(session('error'))
-        <div class="mb-6 p-4 bg-rose-500 text-white rounded-2xl font-bold shadow-lg shadow-rose-200 flex items-center gap-3">
+        <div class="mb-6 p-4 bg-rose-500 text-white rounded-2xl font-bold shadow-lg flex items-center gap-3">
             <i class="fa-solid fa-circle-exclamation"></i>
             {{ session('error') }}
         </div>
@@ -32,9 +32,7 @@
             <tbody class="divide-y divide-slate-50">
                 @forelse($reports as $report)
                 <tr class="hover:bg-slate-50/30 transition-colors">
-                    <td class="p-6 text-sm font-bold text-slate-400">
-                        {{ $loop->iteration }}
-                    </td>
+                    <td class="p-6 text-sm font-bold text-slate-400">{{ $loop->iteration }}</td>
                     <td class="p-6">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-indigo-100 text-[#4e5ecf] rounded-xl flex items-center justify-center font-black uppercase">
@@ -47,15 +45,15 @@
                         </div>
                     </td>
                     <td class="p-6">
-                        <p class="text-sm text-slate-600 leading-relaxed">{{ $report->description }}</p>
+                        <p class="text-sm text-slate-600 leading-relaxed">{{ $report->kegiatan }}</p>
                         <p class="text-[10px] text-[#4e5ecf] mt-2 font-black uppercase tracking-tighter">
-                            <i class="fa-regular fa-calendar-check mr-1"></i> {{ $report->created_at->format('d M Y') }}
+                            <i class="fa-regular fa-calendar-check mr-1"></i> {{ \Carbon\Carbon::parse($report->tanggal)->format('d M Y') }}
                         </p>
                     </td>
                     <td class="p-6 text-center">
                         @if($report->status == 'pending')
                             <span class="px-3 py-1 bg-amber-100 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Pending</span>
-                        @elseif($report->status == 'approved')
+                        @elseif($report->status == 'disetujui')
                             <span class="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Approved</span>
                         @else
                             <span class="px-3 py-1 bg-rose-100 text-rose-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Rejected</span>
@@ -67,19 +65,18 @@
                                 <form action="{{ route('admin.jurnal.approve', $report->id) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase transition-all shadow-lg shadow-emerald-100">
+                                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase transition-all shadow-lg">
                                         <i class="fa-solid fa-check"></i> Setujui
                                     </button>
                                 </form>
-
                                 <form action="{{ route('admin.jurnal.reject', $report->id) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase transition-all shadow-lg shadow-rose-100">
+                                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-[10px] font-black uppercase transition-all shadow-lg">
                                         <i class="fa-solid fa-xmark"></i> Tolak
                                     </button>
                                 </form>
-                            @elseif($report->status == 'approved')
+                            @elseif($report->status == 'disetujui')
                                 <div class="flex items-center gap-2 text-emerald-500 font-black text-[10px] uppercase">
                                     <i class="fa-solid fa-circle-check text-lg"></i> Terverifikasi
                                 </div>
@@ -92,14 +89,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr>
-                    <td colspan="5" class="p-20 text-center">
-                        <div class="flex flex-col items-center">
-                            <i class="fa-solid fa-file-circle-exclamation text-4xl text-slate-200 mb-4"></i>
-                            <p class="text-slate-400 font-bold italic">Belum ada laporan masuk.</p>
-                        </div>
-                    </td>
-                </tr>
+                <tr><td colspan="5" class="p-20 text-center text-slate-400 font-bold italic">Belum ada laporan masuk.</td></tr>
                 @endforelse
             </tbody>
         </table>
