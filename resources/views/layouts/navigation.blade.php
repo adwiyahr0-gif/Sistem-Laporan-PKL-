@@ -7,7 +7,7 @@
                         {{-- Tambahkan style inline width/height untuk mengunci ukuran sebelum CSS load --}}
                         <x-application-logo 
                             class="block h-10 w-auto fill-current text-indigo-600 shadow-sm" 
-                            style="width: 40px; height: 40px;" 
+                            style="width: 40px; height: 40px; object-fit: contain;" 
                         />
                     </a>
                 </div>
@@ -25,7 +25,6 @@
                 </div>
             </div>
 
-            {{-- Sisanya tetap sama seperti kode Anda --}}
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <div class="ms-3 relative">
                     <x-dropdown align="right" width="48">

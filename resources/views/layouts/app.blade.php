@@ -62,9 +62,11 @@
                     :class="sidebarOpen ? 'w-28 h-28' : 'w-14 h-14'"
                     class="sidebar-transition logo-circle overflow-hidden">
                     
+                    {{-- Tambahkan max-width dan max-height inline untuk mencegah 'jump' saat load --}}
                     <img src="{{ asset('images/binjai_logo.png') }}" 
                          alt="Logo" 
-                         class="w-4/5 h-4/5 object-contain">
+                         class="w-4/5 h-4/5 object-contain"
+                         style="max-width: 90px; max-height: 90px;">
                 </div>
                 
                 <div x-show="sidebarOpen" x-transition:enter="transition opacity-300" class="mt-6 text-center">
