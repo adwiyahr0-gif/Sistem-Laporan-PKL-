@@ -1,100 +1,143 @@
 <x-app-layout>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-    <div class="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
+    <!-- Animated background particles -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute w-2 h-2 bg-indigo-400 rounded-full animate-float-1" style="top: 15%; left: 10%;"></div>
+        <div class="absolute w-3 h-3 bg-blue-400 rounded-full animate-float-2" style="top: 25%; left: 85%;"></div>
+        <div class="absolute w-2 h-2 bg-purple-400 rounded-full animate-float-3" style="top: 65%; left: 20%;"></div>
+        <div class="absolute w-3 h-3 bg-indigo-300 rounded-full animate-float-4" style="top: 75%; left: 80%;"></div>
+        <div class="absolute w-2 h-2 bg-blue-300 rounded-full animate-float-5" style="top: 45%; left: 75%;"></div>
+    </div>
+
+    <div class="min-h-screen bg-white py-8 px-4 sm:px-6 lg:px-12 relative z-10">
+        <div class="max-w-[1600px] mx-auto">
             
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 animate__animated animate__fadeInDown">
+            <!-- Header Section -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 animate-slide-down">
                 <div>
-                    <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight">Statistik Aktivitas</h2>
-                    <p class="text-slate-500 mt-1 font-medium">Visualisasi progres magang Anda di Kominfo Binjai secara real-time.</p>
+                    <h1 class="text-4xl font-bold text-slate-800 tracking-tight mb-2">
+                        Statistik Aktivitas
+                    </h1>
+                    <p class="text-slate-600 font-medium">
+                        Visualisasi progres magang Anda secara real-time
+                    </p>
                 </div>
-                <div class="mt-4 md:mt-0">
-                    <span class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-600 shadow-sm">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
-                        Update Terakhir: {{ now()->translatedFormat('d F Y') }}
+                <div class="group">
+                    <span class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl text-xs font-semibold text-white shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 transition-all duration-300 hover:scale-105">
+                        <span class="w-2 h-2 rounded-full bg-white mr-3 animate-pulse"></span>
+                        Update: {{ now()->translatedFormat('d F Y') }}
                     </span>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate__animated animate__fadeInUp">
-                <div class="bg-white p-6 rounded-[2.5rem] border border-white shadow-xl shadow-slate-200/50 relative overflow-hidden group transition-all hover:-translate-y-1">
-                    <p class="text-slate-400 text-xs font-black uppercase tracking-widest">Total Jurnal</p>
-                    <div class="flex items-baseline gap-2 mt-2">
-                        <h3 class="text-4xl font-black text-slate-800">{{ $reports->count() }}</h3>
-                        <span class="text-slate-400 text-xs font-bold uppercase">Entri</span>
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <!-- Total Jurnal -->
+                <div class="group relative bg-gradient-to-br from-slate-700 to-slate-800 p-8 rounded-3xl shadow-xl shadow-slate-900/20 hover:shadow-2xl hover:shadow-slate-900/30 transition-all duration-500 hover:scale-105 overflow-hidden animate-slide-up" style="animation-delay: 0.1s;">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/5 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 group-hover:via-white/10 transition-all duration-700 animate-shimmer"></div>
+                    
+                    <div class="relative">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Total Jurnal</p>
+                        <div class="flex items-baseline gap-2">
+                            <h3 class="text-5xl font-bold text-white tracking-tight">{{ $reports->count() }}</h3>
+                            <span class="text-slate-400 text-sm font-medium">Entri</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-[2.5rem] border border-white shadow-xl shadow-slate-200/50 transition-all hover:-translate-y-1">
-                    <p class="text-slate-400 text-xs font-black uppercase tracking-widest text-emerald-600">Disetujui</p>
-                    <div class="flex items-baseline gap-2 mt-2">
-                        <h3 class="text-4xl font-black text-emerald-500">{{ $reports->where('status', 'disetujui')->count() }}</h3>
-                        <span class="text-slate-400 text-xs font-bold uppercase">Valid</span>
-                    </div>
-                    @php $percent = $reports->count() > 0 ? ($reports->where('status', 'disetujui')->count() / $reports->count()) * 100 : 0; @endphp
-                    <div class="mt-4 w-full bg-slate-100 rounded-full h-1.5">
-                        <div class="bg-emerald-500 h-1.5 rounded-full transition-all duration-1000" style="width: {{ $percent }}%"></div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-[2.5rem] border border-white shadow-xl shadow-slate-200/50 transition-all hover:-translate-y-1">
-                    <p class="text-slate-400 text-xs font-black uppercase tracking-widest text-amber-600">Pending</p>
-                    <div class="flex items-baseline gap-2 mt-2">
-                        <h3 class="text-4xl font-black text-amber-500">{{ $reports->where('status', 'pending')->count() }}</h3>
-                        <span class="text-slate-400 text-xs font-bold uppercase">Proses</span>
+                <!-- Disetujui -->
+                <div class="group relative bg-gradient-to-br from-emerald-500 to-green-600 p-8 rounded-3xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 transition-all duration-500 hover:scale-105 overflow-hidden animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 group-hover:via-white/10 transition-all duration-700 animate-shimmer"></div>
+                    
+                    <div class="relative">
+                        <p class="text-xs font-semibold text-emerald-100 uppercase tracking-wider mb-4">Disetujui</p>
+                        <div class="flex items-baseline gap-2 mb-4">
+                            <h3 class="text-5xl font-bold text-white tracking-tight">{{ $reports->where('status', 'disetujui')->count() }}</h3>
+                            <span class="text-emerald-100 text-sm font-medium">Valid</span>
+                        </div>
+                        @php $percent = $reports->count() > 0 ? ($reports->where('status', 'disetujui')->count() / $reports->count()) * 100 : 0; @endphp
+                        <div class="w-full bg-white/20 rounded-full h-2 overflow-hidden backdrop-blur-sm">
+                            <div class="bg-white h-full rounded-full transition-all duration-1000 shadow-lg" style="width: {{ $percent }}%"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-indigo-600 to-violet-700 p-6 rounded-[2.5rem] shadow-xl shadow-indigo-200 transition-all hover:-translate-y-1">
-                    <p class="text-indigo-100 text-xs font-black uppercase tracking-widest">Poin Aktivitas</p>
-                    <div class="flex items-baseline gap-2 mt-2 text-white">
-                        <h3 class="text-4xl font-black">{{ $reports->count() * 10 }}</h3>
-                        <span class="text-indigo-200 text-xs font-bold uppercase">XP</span>
+                <!-- Pending -->
+                <div class="group relative bg-gradient-to-br from-amber-500 to-orange-600 p-8 rounded-3xl shadow-xl shadow-amber-500/30 hover:shadow-2xl hover:shadow-amber-500/40 transition-all duration-500 hover:scale-105 overflow-hidden animate-slide-up" style="animation-delay: 0.3s;">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 group-hover:via-white/10 transition-all duration-700 animate-shimmer"></div>
+                    
+                    <div class="relative">
+                        <p class="text-xs font-semibold text-amber-100 uppercase tracking-wider mb-4">Pending</p>
+                        <div class="flex items-baseline gap-2">
+                            <h3 class="text-5xl font-bold text-white tracking-tight">{{ $reports->where('status', 'pending')->count() }}</h3>
+                            <span class="text-amber-100 text-sm font-medium">Proses</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Poin Aktivitas -->
+                <div class="group relative bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 p-8 rounded-3xl shadow-xl shadow-indigo-500/40 hover:shadow-2xl hover:shadow-indigo-500/50 transition-all duration-500 hover:scale-105 overflow-hidden animate-slide-up" style="animation-delay: 0.4s;">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full group-hover:scale-125 transition-transform duration-500"></div>
+                    <div class="absolute -left-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 group-hover:via-white/10 transition-all duration-700 animate-shimmer"></div>
+                    
+                    <div class="relative">
+                        <p class="text-xs font-semibold text-indigo-100 uppercase tracking-wider mb-4">Poin Aktivitas</p>
+                        <div class="flex items-baseline gap-2">
+                            <h3 class="text-5xl font-bold text-white tracking-tight">{{ $reports->count() * 10 }}</h3>
+                            <span class="text-indigo-200 text-sm font-medium">XP</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Chart and Recent Section -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 animate__animated animate__fadeInLeft">
-                    <div class="bg-white p-8 rounded-[3rem] border border-white shadow-xl shadow-slate-200/50 h-full">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest">Tren Penginputan Jurnal</h3>
-                            <span class="text-[10px] bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full font-bold">7 HARI TERAKHIR</span>
+                <!-- Line Chart -->
+                <div class="lg:col-span-2 animate-slide-up" style="animation-delay: 0.5s;">
+                    <div class="bg-white/80 backdrop-blur-sm p-10 rounded-3xl border border-slate-200/50 shadow-xl shadow-slate-200/50 h-full hover:shadow-2xl hover:shadow-slate-200/60 transition-all duration-500">
+                        <div class="flex items-center justify-between mb-8">
+                            <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide">Tren Penginputan Jurnal</h3>
+                            <span class="text-xs bg-indigo-100 text-indigo-700 px-4 py-2 rounded-xl font-semibold border border-indigo-200">7 Hari Terakhir</span>
                         </div>
-                        <div class="relative w-full h-[320px]">
+                        <div class="relative w-full h-[350px]">
                             <canvas id="lineChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-1 animate__animated animate__fadeInRight">
-                    <div class="bg-white p-8 rounded-[3rem] border border-white shadow-xl shadow-slate-200/50 h-full">
-                        <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest mb-8">Jurnal Terbaru</h3>
-                        <div class="space-y-6">
+                <!-- Recent Journals -->
+                <div class="lg:col-span-1 animate-slide-up" style="animation-delay: 0.6s;">
+                    <div class="bg-gradient-to-br from-slate-700 to-slate-800 p-8 rounded-3xl shadow-xl shadow-slate-900/30 h-full flex flex-col border border-slate-600/30 hover:shadow-2xl hover:shadow-slate-900/40 transition-all duration-500">
+                        <h3 class="font-bold text-white text-sm uppercase tracking-wide mb-8">Jurnal Terbaru</h3>
+                        <div class="space-y-6 flex-grow">
                             @forelse($reports->take(4) as $r)
-                            <div class="flex gap-4 group">
+                            <div class="flex gap-4 group/item">
                                 <div class="flex flex-col items-center">
-                                    <div class="w-3 h-3 rounded-full {{ $r->status == 'disetujui' ? 'bg-emerald-500' : 'bg-amber-400' }} shadow-[0_0_8px_rgba(0,0,0,0.1)]"></div>
-                                    <div class="w-0.5 h-full bg-slate-100 my-1 group-last:hidden"></div>
+                                    <div class="w-3 h-3 rounded-full {{ $r->status == 'disetujui' ? 'bg-emerald-400 shadow-lg shadow-emerald-400/50' : 'bg-amber-400 shadow-lg shadow-amber-400/50' }} group-hover/item:scale-125 transition-transform duration-300"></div>
+                                    <div class="w-[2px] h-full bg-slate-600/50 my-2 group-last:hidden"></div>
                                 </div>
-                                <div class="pb-6">
-                                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">
+                                <div class="pb-6 flex-1">
+                                    <p class="text-xs font-semibold text-indigo-400 uppercase tracking-wide mb-2">
                                         {{ \Carbon\Carbon::parse($r->tanggal)->translatedFormat('d M Y') }}
                                     </p>
-                                    <p class="text-sm font-bold text-slate-700 leading-tight mt-1 line-clamp-2 italic">
-                                        "{{ $r->kegiatan }}"
+                                    <p class="text-sm font-medium text-slate-300 leading-relaxed group-hover/item:text-white transition-colors duration-300">
+                                        {{ Str::limit($r->kegiatan, 60) }}
                                     </p>
                                 </div>
                             </div>
                             @empty
-                            <div class="text-center py-10 text-slate-400">
-                                <p class="text-sm italic">Belum ada data aktivitas.</p>
+                            <div class="text-center py-16">
+                                <i class="fa-solid fa-folder-open text-slate-600 text-5xl mb-4"></i>
+                                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Belum ada data</p>
                             </div>
                             @endforelse
                         </div>
-                        <a href="{{ route('reports.index') }}" class="block w-full text-center py-4 mt-4 bg-slate-50 rounded-2xl text-xs font-black text-slate-500 uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                        <a href="{{ route('reports.index') }}" class="block w-full text-center py-4 mt-6 bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/30 rounded-2xl text-xs font-semibold uppercase tracking-wide transition-all duration-300 backdrop-blur-sm hover:scale-105">
                             Lihat Semua Jurnal
                         </a>
                     </div>
@@ -106,11 +149,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('lineChart').getContext('2d');
-            
-            // Efek Gradient Halus (Professional Grade)
             const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(79, 70, 229, 0.12)'); 
-            gradient.addColorStop(1, 'rgba(79, 70, 229, 0)');
+            gradient.addColorStop(0, 'rgba(99, 102, 241, 0.2)'); 
+            gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
 
             new Chart(ctx, {
                 type: 'line',
@@ -119,19 +160,19 @@
                     datasets: [{
                         label: 'Laporan',
                         data: {!! json_encode($chartData) !!},
-                        borderColor: '#4f46e5', // Indigo 600
+                        borderColor: '#6366f1',
                         borderWidth: 3,
                         backgroundColor: gradient,
                         fill: true,
-                        tension: 0.35, // Kurva elegan (tidak terlalu kaku, tidak terlalu melengkung)
+                        tension: 0.4,
                         pointBackgroundColor: '#ffffff',
-                        pointBorderColor: '#4f46e5',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 7,
-                        pointHoverBackgroundColor: '#4f46e5',
+                        pointBorderColor: '#6366f1',
+                        pointBorderWidth: 3,
+                        pointRadius: 6,
+                        pointHoverRadius: 9,
+                        pointHoverBackgroundColor: '#6366f1',
                         pointHoverBorderColor: '#ffffff',
-                        pointHoverBorderWidth: 2
+                        pointHoverBorderWidth: 3
                     }]
                 },
                 options: {
@@ -141,33 +182,35 @@
                         legend: { display: false },
                         tooltip: {
                             backgroundColor: '#1e293b',
-                            padding: 12,
-                            titleFont: { size: 12, weight: 'bold' },
-                            bodyFont: { size: 12 },
-                            cornerRadius: 8,
-                            displayColors: false
+                            titleFont: { size: 14, weight: '600', family: 'system-ui' },
+                            bodyFont: { size: 13, weight: '500', family: 'system-ui' },
+                            padding: 16,
+                            cornerRadius: 12,
+                            displayColors: false,
+                            titleColor: '#fff',
+                            bodyColor: '#cbd5e1'
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            suggestedMax: 3,
-                            grid: {
-                                color: '#f1f5f9',
-                                drawBorder: false
+                            grid: { 
+                                color: '#f1f5f9', 
+                                drawBorder: false,
+                                lineWidth: 1
                             },
-                            ticks: {
+                            ticks: { 
                                 stepSize: 1,
-                                color: '#94a3b8',
-                                font: { size: 11, weight: '600' },
+                                color: '#64748b', 
+                                font: { size: 11, weight: '600', family: 'system-ui' },
                                 padding: 8
                             }
                         },
                         x: {
                             grid: { display: false },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: { size: 11, weight: '600' },
+                            ticks: { 
+                                color: '#64748b', 
+                                font: { size: 11, weight: '600', family: 'system-ui' },
                                 padding: 8
                             }
                         }
@@ -176,4 +219,72 @@
             });
         });
     </script>
+
+    <style>
+        /* Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* Background floating particles */
+        @keyframes float-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            33% { transform: translate(30px, -30px) scale(1.2); opacity: 0.6; }
+            66% { transform: translate(-20px, 20px) scale(0.8); opacity: 0.4; }
+        }
+        @keyframes float-2 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            33% { transform: translate(-40px, 30px) scale(1.3); opacity: 0.7; }
+            66% { transform: translate(25px, -25px) scale(0.9); opacity: 0.5; }
+        }
+        @keyframes float-3 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            33% { transform: translate(35px, 25px) scale(1.1); opacity: 0.6; }
+            66% { transform: translate(-30px, -20px) scale(0.85); opacity: 0.4; }
+        }
+        @keyframes float-4 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.35; }
+            33% { transform: translate(-25px, -35px) scale(1.25); opacity: 0.65; }
+            66% { transform: translate(30px, 15px) scale(0.9); opacity: 0.45; }
+        }
+        @keyframes float-5 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            33% { transform: translate(20px, -25px) scale(1.15); opacity: 0.7; }
+            66% { transform: translate(-35px, 30px) scale(0.95); opacity: 0.5; }
+        }
+
+        .animate-float-1 { animation: float-1 8s ease-in-out infinite; }
+        .animate-float-2 { animation: float-2 10s ease-in-out infinite; }
+        .animate-float-3 { animation: float-3 12s ease-in-out infinite; }
+        .animate-float-4 { animation: float-4 9s ease-in-out infinite; }
+        .animate-float-5 { animation: float-5 11s ease-in-out infinite; }
+
+        /* Slide animations */
+        @keyframes slide-down {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-down { animation: slide-down 0.6s ease-out; }
+
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            opacity: 0;
+            animation: slide-up 0.6s ease-out forwards;
+        }
+
+        /* Shimmer effect */
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        .animate-shimmer {
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+    </style>
 </x-app-layout>

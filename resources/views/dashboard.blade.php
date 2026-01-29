@@ -1,5 +1,4 @@
 <x-app-layout>
-    <!-- Animated background particles -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float-1" style="top: 10%; left: 10%;"></div>
         <div class="absolute w-3 h-3 bg-blue-400 rounded-full animate-float-2" style="top: 20%; left: 80%;"></div>
@@ -9,10 +8,9 @@
         <div class="absolute w-4 h-4 bg-indigo-300 rounded-full animate-float-6" style="top: 70%; left: 30%;"></div>
     </div>
 
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 py-8 px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="min-h-screen bg-white py-8 px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="max-w-7xl mx-auto">
             
-            <!-- Header Section -->
             <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4 animate-slide-down">
                 <div>
                     <h2 class="text-4xl font-black tracking-tight uppercase mb-2">
@@ -24,7 +22,6 @@
                     </p>
                 </div>
                 
-                <!-- Status Badge -->
                 <div class="group flex items-center gap-3 bg-gradient-to-br from-white to-slate-50 p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-cyan-500/20 hover:shadow-2xl hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-500 animate-bounce-subtle">
                     <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                         <i class="fa-solid fa-user-graduate text-2xl"></i>
@@ -38,12 +35,9 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
-                <!-- Main Content -->
                 <div class="lg:col-span-2 space-y-8">
                     
-                    <!-- Statistics Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Total Jurnal -->
                         <div class="group relative bg-gradient-to-br from-white to-slate-50 p-6 rounded-3xl border border-cyan-500/20 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-cyan-500/30 transition-all duration-500 hover:scale-105 overflow-hidden animate-slide-up" style="animation-delay: 0.1s;">
                             <div class="absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br from-cyan-100 to-blue-100 rounded-full group-hover:scale-125 transition-transform duration-500 opacity-50"></div>
                             <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-blue-500/0 to-indigo-500/0 group-hover:from-cyan-500/5 group-hover:via-blue-500/5 group-hover:to-indigo-500/5 transition-all duration-700 animate-shimmer"></div>
@@ -64,7 +58,6 @@
                             <div class="absolute top-3 right-3 w-2 h-2 bg-cyan-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping"></div>
                         </div>
 
-                        <!-- Disetujui -->
                         <div class="group relative bg-gradient-to-br from-white to-green-50/30 p-6 rounded-3xl border border-green-500/20 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-500 hover:scale-105 overflow-hidden animate-slide-up" style="animation-delay: 0.2s;">
                             <div class="absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full group-hover:scale-125 transition-transform duration-500 opacity-50"></div>
                             <div class="absolute inset-0 bg-gradient-to-r from-green-500/0 via-emerald-500/0 to-teal-500/0 group-hover:from-green-500/5 group-hover:via-emerald-500/5 group-hover:to-teal-500/5 transition-all duration-700 animate-shimmer"></div>
@@ -85,7 +78,6 @@
                             <div class="absolute top-3 right-3 w-2 h-2 bg-green-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping"></div>
                         </div>
 
-                        <!-- Pending -->
                         <div class="group relative bg-gradient-to-br from-white to-amber-50/30 p-6 rounded-3xl border border-amber-500/20 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-amber-500/30 transition-all duration-500 hover:scale-105 overflow-hidden animate-slide-up" style="animation-delay: 0.3s;">
                             <div class="absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br from-amber-100 to-yellow-100 rounded-full group-hover:scale-125 transition-transform duration-500 opacity-50"></div>
                             <div class="absolute inset-0 bg-gradient-to-r from-amber-500/0 via-yellow-500/0 to-orange-500/0 group-hover:from-amber-500/5 group-hover:via-yellow-500/5 group-hover:to-orange-500/5 transition-all duration-700 animate-shimmer"></div>
@@ -107,9 +99,7 @@
                         </div>
                     </div>
 
-                    <!-- Quick Access Section -->
                     <div class="relative bg-gradient-to-br from-indigo-900 via-blue-900 to-indigo-900 rounded-3xl p-8 text-white shadow-2xl shadow-indigo-500/30 overflow-hidden group hover:shadow-3xl hover:shadow-indigo-500/40 transition-all duration-500 animate-slide-up" style="animation-delay: 0.4s;">
-                        <!-- Background Effects -->
                         <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                         <div class="absolute top-0 left-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl animate-pulse-slow"></div>
                         <div class="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1s;"></div>
@@ -146,9 +136,7 @@
                     </div>
                 </div>
 
-                <!-- Sidebar -->
                 <div class="space-y-8">
-                    <!-- Info System -->
                     <div class="bg-gradient-to-br from-white to-slate-50 p-8 rounded-3xl border border-cyan-500/20 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-cyan-500/20 transition-all duration-500 group animate-slide-up" style="animation-delay: 0.5s;">
                         <div class="flex items-center gap-4 mb-6">
                             <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
@@ -188,7 +176,6 @@
                         </div>
                     </div>
 
-                    <!-- Footer Info -->
                     <div class="text-center px-4 py-6 bg-gradient-to-br from-slate-100 to-slate-50 rounded-3xl border border-slate-200/50 hover:shadow-lg hover:shadow-slate-200 transition-all duration-300 animate-slide-up" style="animation-delay: 0.6s;">
                         <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl mx-auto mb-3 flex items-center justify-center shadow-lg shadow-cyan-500/30">
                             <i class="fa-solid fa-building text-white text-lg"></i>
@@ -202,93 +189,30 @@
     </div>
 
     <style>
-        /* Background floating particles */
-        @keyframes float-1 {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-            33% { transform: translate(30px, -30px) scale(1.2); opacity: 0.6; }
-            66% { transform: translate(-20px, 20px) scale(0.8); opacity: 0.4; }
-        }
-        @keyframes float-2 {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
-            33% { transform: translate(-40px, 30px) scale(1.3); opacity: 0.7; }
-            66% { transform: translate(25px, -25px) scale(0.9); opacity: 0.5; }
-        }
-        @keyframes float-3 {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-            33% { transform: translate(35px, 25px) scale(1.1); opacity: 0.6; }
-            66% { transform: translate(-30px, -20px) scale(0.85); opacity: 0.4; }
-        }
-        @keyframes float-4 {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.35; }
-            33% { transform: translate(-25px, -35px) scale(1.25); opacity: 0.65; }
-            66% { transform: translate(30px, 15px) scale(0.9); opacity: 0.45; }
-        }
-        @keyframes float-5 {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
-            33% { transform: translate(20px, -25px) scale(1.15); opacity: 0.7; }
-            66% { transform: translate(-35px, 30px) scale(0.95); opacity: 0.5; }
-        }
-        @keyframes float-6 {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-            33% { transform: translate(-30px, 20px) scale(1.2); opacity: 0.6; }
-            66% { transform: translate(25px, -30px) scale(0.85); opacity: 0.4; }
-        }
-
+        /* CSS TETAP SAMA SEPERTI SEBELUMNYA */
+        @keyframes float-1 { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; } 33% { transform: translate(30px, -30px) scale(1.2); opacity: 0.6; } 66% { transform: translate(-20px, 20px) scale(0.8); opacity: 0.4; } }
+        @keyframes float-2 { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; } 33% { transform: translate(-40px, 30px) scale(1.3); opacity: 0.7; } 66% { transform: translate(25px, -25px) scale(0.9); opacity: 0.5; } }
+        @keyframes float-3 { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; } 33% { transform: translate(35px, 25px) scale(1.1); opacity: 0.6; } 66% { transform: translate(-30px, -20px) scale(0.85); opacity: 0.4; } }
+        @keyframes float-4 { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.35; } 33% { transform: translate(-25px, -35px) scale(1.25); opacity: 0.65; } 66% { transform: translate(30px, 15px) scale(0.9); opacity: 0.45; } }
+        @keyframes float-5 { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; } 33% { transform: translate(20px, -25px) scale(1.15); opacity: 0.7; } 66% { transform: translate(-35px, 30px) scale(0.95); opacity: 0.5; } }
+        @keyframes float-6 { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; } 33% { transform: translate(-30px, 20px) scale(1.2); opacity: 0.6; } 66% { transform: translate(25px, -30px) scale(0.85); opacity: 0.4; } }
         .animate-float-1 { animation: float-1 8s ease-in-out infinite; }
         .animate-float-2 { animation: float-2 10s ease-in-out infinite; }
         .animate-float-3 { animation: float-3 12s ease-in-out infinite; }
         .animate-float-4 { animation: float-4 9s ease-in-out infinite; }
         .animate-float-5 { animation: float-5 11s ease-in-out infinite; }
         .animate-float-6 { animation: float-6 13s ease-in-out infinite; }
-
-        /* Slide animations */
-        @keyframes slide-down {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slide-down { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-slide-down { animation: slide-down 0.6s ease-out; }
-
-        @keyframes slide-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-slide-up {
-            opacity: 0;
-            animation: slide-up 0.6s ease-out forwards;
-        }
-
-        /* Gradient flow */
-        @keyframes gradient-flow {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        .animate-gradient-flow {
-            background-size: 200% 200%;
-            animation: gradient-flow 4s ease infinite;
-        }
-
-        /* Bounce subtle */
-        @keyframes bounce-subtle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
+        @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-up { opacity: 0; animation: slide-up 0.6s ease-out forwards; }
+        @keyframes gradient-flow { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .animate-gradient-flow { background-size: 200% 200%; animation: gradient-flow 4s ease infinite; }
+        @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         .animate-bounce-subtle { animation: bounce-subtle 3s ease-in-out infinite; }
-
-        /* Shimmer effect */
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-        .animate-shimmer {
-            background-size: 200% 100%;
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        /* Pulse slow */
-        @keyframes pulse-slow {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.1); }
-        }
+        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        .animate-shimmer { background-size: 200% 100%; animation: shimmer 3s ease-in-out infinite; }
+        @keyframes pulse-slow { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } }
         .animate-pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }
     </style>
 </x-app-layout>
