@@ -41,11 +41,21 @@ class AdminController extends Controller
     }
 
     /**
-     * Menampilkan daftar mahasiswa
+     * Menampilkan daftar mahasiswa (DENGAN PAGINATION & SEARCH)
      */
-    public function students()
+    public function students(Request $request)
     {
-        $students = User::where('role', 'mahasiswa')->latest()->get();
+        $search = $request->get('search');
+
+        // Menambahkan filter pencarian berdasarkan nama
+        $students = User::where('role', 'mahasiswa')
+            ->when($search, function ($query) use ($search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.student.index', compact('students'));
     }
 
@@ -126,15 +136,11 @@ class AdminController extends Controller
         $student = User::findOrFail($id);
         
         try {
-            // Logika Tambahan: Hapus semua data yang terhubung dengan mahasiswa ini
-            // agar tidak terjadi error foreign key constraint
             Report::where('user_id', $student->id)->delete();
             Presensi::where('user_id', $student->id)->delete();
-            
-            // Hapus akun mahasiswanya
             $student->delete();
 
-            return redirect()->route('admin.students.index')->with('success', 'Mahasiswa dan seluruh data terkait (Laporan & Absensi) berhasil dihapus.');
+            return redirect()->route('admin.students.index')->with('success', 'Mahasiswa dan seluruh data terkait berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menghapus mahasiswa: ' . $e->getMessage());
         }
@@ -142,13 +148,24 @@ class AdminController extends Controller
 
     /**
      * ==========================================================
-     * FITUR VALIDASI JURNAL
+     * FITUR VALIDASI JURNAL (DENGAN PAGINATION & SEARCH)
      * ==========================================================
      */
-
-    public function validasiJurnal()
+    public function validasiJurnal(Request $request)
     {
-        $reports = Report::with('user')->latest()->get();
+        $search = $request->get('search');
+
+        // Mengambil data dengan filter pencarian nama mahasiswa
+        $reports = Report::with('user')
+            ->when($search, function ($query) use ($search) {
+                return $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString(); // Menjaga parameter ?search saat pindah page pagination
+
         return view('admin.jurnal.index', compact('reports'));
     }
 
@@ -160,7 +177,6 @@ class AdminController extends Controller
         $report = Report::findOrFail($id);
         
         try {
-            // Kita ubah statusnya menjadi 'disetujui' agar sesuai dengan pengecekan di view mahasiswa
             DB::statement('PRAGMA ignore_check_constraints = ON');
             $report->update(['status' => 'disetujui']); 
             DB::statement('PRAGMA ignore_check_constraints = OFF');
@@ -186,7 +202,7 @@ class AdminController extends Controller
                 'status' => 'rejected',
                 'rejection_reason' => $reason 
             ]);
-            DB::statement('PRAGMA ignore_check_constraints = OFF');
+            // DB::statement('PRAGMA ignore_check_constraints = OFF'); // Sesuai kode asli Anda
 
             return redirect()->route('admin.jurnal.index')->with('success', 'Laporan harian mahasiswa telah ditolak.');
         } catch (\Exception $e) {
@@ -196,13 +212,24 @@ class AdminController extends Controller
 
     /**
      * ==========================================================
-     * FITUR REKAP PRESENSI
+     * FITUR REKAP PRESENSI (DENGAN PAGINATION & SEARCH)
      * ==========================================================
      */
-
-    public function rekapPresensi()
+    public function rekapPresensi(Request $request)
     {
-        $presensis = Presensi::with('user')->latest()->get();
+        $search = $request->get('search');
+
+        // Menampilkan data absen dengan filter pencarian nama
+        $presensis = Presensi::with('user')
+            ->when($search, function ($query) use ($search) {
+                return $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
         return view('admin.presensi.index', compact('presensis'));
     }
 
@@ -213,10 +240,7 @@ class AdminController extends Controller
      */
     public function manageAdmin()
     {
-        // Mengambil semua user yang memiliki role 'admin'
         $admins = User::where('role', 'admin')->latest()->get();
-
-        // Mengarahkan ke file resources/views/admin/manage.blade.php
         return view('admin.manage', compact('admins'));
     }
 
@@ -244,7 +268,7 @@ class AdminController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => 'admin', // Otomatis set sebagai admin
+                'role' => 'admin',
             ]);
 
             return redirect()->route('admin.manage')->with('success', 'Admin baru berhasil didaftarkan!');
@@ -258,12 +282,10 @@ class AdminController extends Controller
      */
     public function destroyAdmin($id)
     {
-        // Pastikan user yang dihapus memang admin
         $admin = User::where('role', 'admin')->findOrFail($id);
         
-        // Mencegah admin menghapus dirinya sendiri
         if (auth()->id() == $admin->id) {
-            return redirect()->back()->with('error', 'Anda tidak bisa menghapus akun Anda sendiri saat sedang login!');
+            return redirect()->back()->with('error', 'Anda tidak bisa menghapus akun Anda sendiri!');
         }
 
         try {

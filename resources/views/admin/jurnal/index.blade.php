@@ -1,7 +1,27 @@
 <x-admin-layout>
-    <div class="mb-8">
-        <h1 class="text-2xl font-black text-slate-800 tracking-tighter uppercase">Validasi Laporan Mahasiswa</h1>
-        <p class="text-slate-500 font-medium">Tinjau dan berikan persetujuan atau penolakan untuk laporan kegiatan mahasiswa.</p>
+    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-black text-slate-800 tracking-tighter uppercase">Validasi Laporan Mahasiswa</h1>
+            <p class="text-slate-500 font-medium">Tinjau dan berikan persetujuan atau penolakan untuk laporan kegiatan mahasiswa.</p>
+        </div>
+
+        <form action="{{ route('admin.jurnal.index') }}" method="GET" class="relative group">
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ request('search') }}"
+                placeholder="Cari nama mahasiswa..." 
+                class="w-full md:w-72 pl-12 pr-10 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-[#4e5ecf] transition-all shadow-sm"
+            >
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#4e5ecf] transition-colors">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            @if(request('search'))
+                <a href="{{ route('admin.jurnal.index') }}" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-rose-500 transition-colors">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </a>
+            @endif
+        </form>
     </div>
 
     @if(session('success'))
@@ -32,7 +52,9 @@
             <tbody class="divide-y divide-slate-50">
                 @forelse($reports as $report)
                 <tr class="hover:bg-slate-50/30 transition-colors">
-                    <td class="p-6 text-sm font-bold text-slate-400">{{ $loop->iteration }}</td>
+                    <td class="p-6 text-sm font-bold text-slate-400">
+                        {{ ($reports->currentPage() - 1) * $reports->perPage() + $loop->iteration }}
+                    </td>
                     <td class="p-6">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-indigo-100 text-[#4e5ecf] rounded-xl flex items-center justify-center font-black uppercase">
@@ -89,9 +111,67 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="p-20 text-center text-slate-400 font-bold italic">Belum ada laporan masuk.</td></tr>
+                <tr>
+                    <td colspan="5" class="p-20 text-center">
+                        <div class="flex flex-col items-center justify-center gap-3">
+                            <div class="w-16 h-16 bg-slate-50 text-slate-200 rounded-full flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </div>
+                            <p class="text-slate-400 font-bold italic">
+                                {{ request('search') ? 'Laporan untuk "'.request('search').'" tidak ditemukan.' : 'Belum ada laporan masuk.' }}
+                            </p>
+                            @if(request('search'))
+                                <a href="{{ route('admin.jurnal.index') }}" class="text-xs font-black uppercase text-[#4e5ecf] hover:underline">Lihat Semua Laporan</a>
+                            @endif
+                        </div>
+                    </td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
+
+        <div class="px-8 py-6 border-t border-slate-50 bg-slate-50/30">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Showing {{ $reports->firstItem() ?? 0 }} to {{ $reports->lastItem() ?? 0 }} of {{ $reports->total() }} reports
+                </p>
+                <div class="custom-pagination">
+                    {{ $reports->links() }}
+                </div>
+            </div>
+        </div>
     </div>
+
+    <style>
+        .custom-pagination nav > div:first-child {
+            display: none;
+        }
+        
+        .custom-pagination nav span[aria-current="page"] span {
+            background-color: #4e5ecf !important;
+            border-color: #4e5ecf !important;
+            color: white !important;
+            border-radius: 12px;
+            font-weight: 900;
+            padding: 8px 16px !important;
+        }
+
+        .custom-pagination nav a, 
+        .custom-pagination nav span {
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 11px;
+            padding: 8px 16px !important;
+            color: #64748b !important;
+            border: 1px solid #f1f5f9 !important;
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+
+        .custom-pagination nav a:hover {
+            background-color: #f8fafc !important;
+            border-color: #4e5ecf !important;
+            color: #4e5ecf !important;
+        }
+    </style>
 </x-admin-layout>
